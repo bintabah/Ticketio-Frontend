@@ -1,0 +1,26 @@
+{
+    "name": "Ticketio Frontend",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "angular.ng-template",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "bash"
+                    }
+                }
+            }
+        }
+    },
+    "forwardPorts": [4200],
+    "postCreateCommand": "npm install && ng analytics off && ng serve --host 0.0.0.0 --port 4200",
+    "remoteUser": "root"
+}
