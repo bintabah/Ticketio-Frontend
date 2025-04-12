@@ -9,3 +9,9 @@ services:
     command: sleep infinity
     ports:
       - "4200:4200"
+    networks:
+      - devnetwork
+
+networks:
+  devnetwork:
+    external: true
