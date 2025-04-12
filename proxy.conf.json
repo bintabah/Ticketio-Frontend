@@ -3,6 +3,12 @@
     "target": "http://workspace:8081",
     "secure": false,
     "changeOrigin": true,
-    "logLevel": "debug"
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "headers": {
+      "Accept": "application/json"
+    }
   }
 }
