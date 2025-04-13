@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { User } from './models/user.model';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, RouterOutlet],
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
   title = 'ticketio_front';
   users: User[] = [];
-
-  constructor(private http: HttpClient) {}
+  private userService = inject(UserService);
 
   ngOnInit(): void {
-    this.http.get<User[]>('/api/users').subscribe(
+    this.userService.getUsers().subscribe(
       (data) => {
         console.log('Réponse du backend :', data);
         this.users = data;
@@ -24,14 +27,4 @@ export class AppComponent implements OnInit {
       }
     );
   }
-}
-
-// ✅ Déclaration directe de l'interface User dans le même fichier
-interface User {
-  userId: number;
-  name: string;
-  firstName: string;
-  email: string;
-  contact: string;
-  role: string;
 }

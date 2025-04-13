@@ -1,5 +1,5 @@
 export interface User {
-    userId: number | null;  // Using number | null since it might be null for new users
+    userId: number;
     name: string;
     firstName: string;
     email: string;
