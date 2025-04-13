@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { User } from './models/user.model';
 import { UserService } from './services/user.service';
+import { ButtonDemoComponent } from './components/button-demo/button-demo.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, ButtonDemoComponent],
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {

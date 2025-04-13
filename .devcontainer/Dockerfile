@@ -28,10 +28,13 @@ RUN echo "export NVM_DIR=\"$NVM_DIR\"" >> ~/.bashrc \
     && echo "[ -s \"$NVM_DIR/bash_completion\" ] && \. \"$NVM_DIR/bash_completion\"" >> ~/.bashrc \
     && echo "nvm use $NODE_VERSION" >> ~/.bashrc
 
-# Install global packages
-RUN . $NVM_DIR/nvm.sh && npm install -g @angular/cli
+# Install specific Angular version
+RUN . $NVM_DIR/nvm.sh && npm install -g @angular/cli@19.2.6
 
 WORKDIR /workspace
+
+# Install Angular core and update project dependencies
+RUN echo "npm install @angular/core@19.2.6 @angular/cli@19.2.6" >> ~/.bashrc
 
 # Verify installations on container startup
 RUN echo "echo 'Node version: \$(node -v)'" >> ~/.bashrc \

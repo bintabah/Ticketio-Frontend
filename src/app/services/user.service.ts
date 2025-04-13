@@ -8,7 +8,7 @@ import { User } from '../models/user.model';
 })
 export class UserService {
 
-  private apiUrl = '/api/users'; // ✅ grâce au proxy Angular
+  private apiUrl = '/api/users';
   private http = inject(HttpClient);
 
   getUsers(): Observable<User[]> {

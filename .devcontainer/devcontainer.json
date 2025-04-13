@@ -21,6 +21,6 @@
         }
     },
     "forwardPorts": [4200],
-    "postCreateCommand": "npm install && ng analytics off && ng serve --host 0.0.0.0 --port 4200 --proxy-config proxy.conf.json",
+    "postCreateCommand": "npm install && ng analytics off && mkdir -p /workspace/.devcontainer/scripts && echo '#!/bin/bash\nng serve --host 0.0.0.0 --port 4200 --proxy-config proxy.conf.json' > /workspace/.devcontainer/scripts/serve.sh && chmod +x /workspace/.devcontainer/scripts/serve.sh && ln -s /workspace/.devcontainer/scripts/serve.sh /usr/local/bin/serve",
     "remoteUser": "root"
 }
