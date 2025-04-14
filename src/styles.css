@@ -1,7 +1,117 @@
-/* Global styles */
+/* Marianne Font Import */
+@font-face {
+    font-family: 'Marianne';
+    src: url('/assets/fonts/Marianne-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Marianne';
+    src: url('/assets/fonts/Marianne-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Marianne';
+    src: url('/assets/fonts/Marianne-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Marianne';
+    src: url('/assets/fonts/Marianne-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
+    --font-family: 'Marianne', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    
+    /* DSFR Typography Scale */
+    --text-spacing: 0;
+    --text-regular: 400;
+    --text-medium: 500;
+    --text-bold: 700;
+    --text-light: 300;
+    
+    /* Font sizes following DSFR */
+    --text-xs: 0.75rem;  /* 12px */
+    --text-sm: 0.875rem; /* 14px */
+    --text-base: 1rem;   /* 16px */
+    --text-lg: 1.25rem;  /* 20px */
+    --text-xl: 1.5rem;   /* 24px */
+    --text-2xl: 2rem;    /* 32px */
+    
+    /* Line heights */
+    --leading-none: 1;
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.75;
+}
+
+/* Global styles */
+html {
     font-family: var(--font-family);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+    letter-spacing: var(--text-spacing);
+}
+
+body {
+    font-family: var(--font-family);
+    font-weight: var(--text-regular);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+}
+
+/* Heading styles following DSFR */
+h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--text-bold);
+    line-height: var(--leading-tight);
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--text-bold);
+    line-height: var(--leading-tight);
+    margin-bottom: 0.75rem;
+}
+
+h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--text-medium);
+    line-height: var(--leading-normal);
+    margin-bottom: 0.5rem;
+}
+
+/* Form elements */
+input, button, select, textarea {
+    font-family: var(--font-family);
+    font-size: var(--text-sm);
+    font-weight: var(--text-regular);
+}
+
+/* Links */
+a {
+    color: #000091;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+a:hover {
+    color: #1212ff;
 }
 

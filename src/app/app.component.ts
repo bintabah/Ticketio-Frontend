@@ -1,19 +1,34 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { TopBarComponent } from './components/layout/top-bar/top-bar.component';
+import { SideBarComponent } from './components/layout/side-bar/side-bar.component';
+import { MainContentComponent } from './components/layout/main-content/main-content.component';
 import { User } from './models/user.model';
 import { UserService } from './services/user.service';
 import { ButtonDemoComponent } from './components/button-demo/button-demo.component';
 import { ButtonModule } from 'primeng/button';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { DrawerModule } from 'primeng/drawer';
+import { TableModule } from 'primeng/table';
 import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ButtonDemoComponent, ButtonModule, PanelMenuModule, DrawerModule],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    TopBarComponent,
+    SideBarComponent,
+    MainContentComponent,
+    ButtonDemoComponent,
+    ButtonModule,
+    PanelMenuModule,
+    DrawerModule,
+    TableModule
+  ],
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
@@ -23,32 +38,39 @@ export class AppComponent implements OnInit {
   visible = false;
   private userService = inject(UserService);
 
+  constructor() {}
+
   ngOnInit(): void {
     this.userService.getUsers().subscribe(
-      (data) => {
+      (data: User[]) => {
         console.log('Réponse du backend :', data);
         this.users = data;
       },
-      (error) => {
+      (error: Error) => {
         console.error('Erreur lors de la récupération des utilisateurs', error);
       }
     );
 
     this.items = [
       {
-        label: 'Home',
-        icon: 'pi pi-home',
-        routerLink: '/'
+        label: 'Users',
+        icon: 'pi pi-users',
+        routerLink: '/users'
       },
       {
-        label: 'About',
-        icon: 'pi pi-info',
-        routerLink: '/about'
+        label: 'Artists',
+        icon: 'pi pi-star',
+        routerLink: '/artists'
       },
       {
-        label: 'Contact',
-        icon: 'pi pi-envelope',
-        routerLink: '/contact'
+        label: 'Events',
+        icon: 'pi pi-calendar',
+        routerLink: '/events'
+      },
+      {
+        label: 'Tickets',
+        icon: 'pi pi-ticket',
+        routerLink: '/tickets'
       }
     ];
   }

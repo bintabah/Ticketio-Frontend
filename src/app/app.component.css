@@ -1,0 +1,220 @@
+/* Main Layout */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8fafc;
+    position: relative;
+    font-family: var(--font-family);
+}
+
+/* Top Bar Layout */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 3.5rem;
+    padding: 0 1.5rem;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.top-bar h1 {
+    font-size: var(--text-xl);
+    font-weight: var(--text-bold);
+    color: #000091;
+    margin: 0;
+}
+
+.top-bar-left, .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.top-bar-right {
+    margin-left: auto;
+}
+
+/* Content Layout */
+.content-container {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 3.5rem);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Sidebar Layout */
+.sidebar {
+    width: 280px;
+    background-color: var(--surface-overlay);
+    border-right: 1px solid var(--surface-border);
+    padding: 1rem 0;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background-color: #f1f5f9;
+}
+
+.content-section {
+    background-color: var(--surface-card);
+    border-radius: 6px;
+    padding: 1.5rem;
+}
+
+/* PrimeNG Component Overrides */
+:host ::ng-deep {
+    /* Reset and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Table styling */
+    .p-datatable {
+        background: #ffffff;
+        font-family: var(--font-family);
+    }
+
+    .p-datatable .p-datatable-thead > tr > th {
+        background: #f8fafc;
+        color: #1e293b;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-bottom: 1px solid #e5e7eb;
+        font-weight: var(--text-medium);
+        font-size: var(--text-sm);
+    }
+
+    .p-datatable .p-datatable-tbody > tr > td {
+        padding: 0.75rem 1rem;
+        border: none;
+        font-size: var(--text-sm);
+        color: #475569;
+        font-weight: var(--text-regular);
+    }
+
+    .p-datatable .p-datatable-tbody > tr {
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Button styling */
+    .p-button {
+        font-family: var(--font-family);
+        font-weight: var(--text-medium);
+        font-size: var(--text-sm);
+    }
+
+    .p-button.p-button-text {
+        color: #3B82F6;
+        padding: 0;
+        font-size: 0.875rem;
+    }
+
+    .p-button.p-button-text:hover {
+        background: transparent;
+        color: #2563EB;
+        text-decoration: underline;
+    }
+
+    .p-button.p-button-text:focus {
+        box-shadow: none;
+    }
+
+    /* Input styling */
+    .p-inputtext {
+        font-family: var(--font-family);
+        font-size: var(--text-sm);
+        font-weight: var(--text-regular);
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+    }
+
+    .p-input-icon-left > .p-inputtext {
+        padding-left: 2.25rem;
+    }
+
+    .p-input-icon-left > i {
+        left: 0.75rem;
+        color: #64748b;
+    }
+
+    /* Menu styling */
+    .p-panelmenu {
+        font-family: var(--font-family);
+        background: transparent;
+        border: none;
+    }
+
+    .p-panelmenu .p-panelmenu-header > a {
+        font-weight: var(--text-medium);
+        font-size: var(--text-base);
+    }
+
+    .p-panelmenu .p-panelmenu-header:not(.p-highlight):not(.p-disabled) > a:hover {
+        background: var(--surface-hover);
+    }
+
+    .p-panelmenu .p-panelmenu-header > a .p-menuitem-icon {
+        margin-right: 0.75rem;
+        font-size: 1.25rem;
+    }
+
+    .p-panelmenu .p-panelmenu-content .p-menuitem > a {
+        font-size: var(--text-sm);
+        font-weight: var(--text-regular);
+    }
+
+    /* Link styling */
+    .text-primary {
+        color: #000091 !important;
+    }
+
+    .hover\:text-primary:hover {
+        color: #1212ff !important;
+    }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Utility classes for typography */
+.text-xs { font-size: var(--text-xs); }
+.text-sm { font-size: var(--text-sm); }
+.text-base { font-size: var(--text-base); }
+.text-lg { font-size: var(--text-lg); }
+.text-xl { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+
+.font-light { font-weight: var(--text-light); }
+.font-regular { font-weight: var(--text-regular); }
+.font-medium { font-weight: var(--text-medium); }
+.font-bold { font-weight: var(--text-bold); }
+
+/* DSFR specific colors */
+.text-primary { color: #000091; }
+.text-primary-hover:hover { color: #1212ff; }
+.text-secondary { color: #666666; }
