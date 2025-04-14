@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-// import { ButtonDemoComponent } from './components/button-demo/button-demo.component';
+import { ArtistsListComponent } from './components/layout/artists-list/artists-list.component';
 
 export const routes: Routes = [
-    // { path: '', component: ButtonDemoComponent },
-]; 
+  { path: 'artists', component: ArtistsListComponent },
+  { path: '', redirectTo: 'artists', pathMatch: 'full' }
+];

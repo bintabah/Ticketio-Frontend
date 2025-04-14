@@ -18,7 +18,7 @@ import { MenuItem } from 'primeng/api';
   standalone: true,
   imports: [
     CommonModule,
-    // RouterOutlet,
+    RouterOutlet,
     TopBarComponent,
     SideBarComponent,
     MainContentComponent,

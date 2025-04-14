@@ -1,0 +1,110 @@
+.main-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+}
+
+.scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem;
+    padding-bottom: 4.5rem; /* Footer height (3rem) + extra padding (1.5rem) */
+}
+
+.content-section {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+    min-height: calc(100% - 4.5rem); /* Full height minus footer space */
+}
+
+.content-section:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.content-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 1.5rem 0;
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    padding: 0.5rem 0;
+    z-index: 10;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    color: #64748b;
+    font-size: 0.75rem;
+    user-select: none;
+    margin-top: auto;
+}
+
+:host ::ng-deep {
+    .p-datatable {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .p-datatable .p-datatable-thead > tr > th {
+        background: #f8fafc;
+        color: #475569;
+        padding: 0.875rem 1rem;
+        border: none;
+        border-bottom: 1px solid #e2e8f0;
+        font-weight: var(--text-medium);
+        font-size: var(--text-sm);
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
+
+    .p-datatable .p-datatable-tbody > tr {
+        border-bottom: 1px solid #e2e8f0;
+        transition: background-color 0.2s ease;
+    }
+
+    .p-datatable .p-datatable-tbody > tr:hover {
+        background-color: #f8fafc;
+    }
+
+    .p-datatable .p-datatable-tbody > tr:last-child {
+        border-bottom: none;
+    }
+
+    .p-datatable .p-datatable-tbody > tr > td {
+        padding: 0.875rem 1rem;
+        color: #475569;
+        font-size: var(--text-sm);
+        border: none;
+    }
+}
+
+.action-link {
+    color: #3b82f6;
+    font-size: 0.875rem;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.action-link:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    text-decoration: none;
+}
+
+.action-link:active {
+    background-color: rgba(59, 130, 246, 0.2);
+}
