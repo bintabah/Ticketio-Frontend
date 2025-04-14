@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { FooterComponent } from '../footer/footer.component';
+import { HttpClient } from '@angular/common/http';
 
 interface User {
   id: number;
@@ -25,52 +26,22 @@ interface User {
 export class MainContentComponent implements OnInit {
   users: User[] = [];
 
+  constructor(private http: HttpClient) {}
+
   ngOnInit() {
-    // Mock data - replace with actual API call
-    this.users = [
-      {
-        id: 1,
-        nom: 'Jean',
-        prenom: 'Dupont',
-        email: 'jean.dupont@example.com',
-        role: 'Admin'
+    this.loadUsers();
+  }
+
+  loadUsers() {
+    this.http.get<User[]>('/api/users').subscribe({
+      next: (data) => {
+        this.users = data;
       },
-      {
-        id: 2,
-        nom: 'Marie',
-        prenom: 'Martin',
-        email: 'marie.martin@example.com',
-        role: 'User'
-      },
-      {
-        id: 3,
-        nom: 'Pierre',
-        prenom: 'Durand',
-        email: 'pierre.durand@example.com',
-        role: 'User'
-      },
-      {
-        id: 4,
-        nom: 'Isabelle',
-        prenom: 'Petit',
-        email: 'isabelle.petit@example.com',
-        role: 'User'
-      },
-      {
-        id: 5,
-        nom: 'Thomas',
-        prenom: 'Moreau',
-        email: 'thomas.moreau@example.c',
-        role: 'User'
-      },
-      {
-        id: 6,
-        nom: 'Sophie',
-        prenom: 'Laurent',
-        email: 'sophie.laurent@example.com',
-        role: 'User'
+      error: (error) => {
+        console.error('Error fetching users:', error);
+        // Here you could add error handling, like showing a message to the user
       }
-    ];
+    });
   }
 
   onEdit(user: User) {
