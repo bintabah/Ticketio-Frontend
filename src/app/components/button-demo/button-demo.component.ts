@@ -17,6 +17,7 @@ import { ButtonModule } from 'primeng/button';
                     <p-button label="Warning" severity="warn"></p-button>
                     <p-button label="Help" severity="help"></p-button>
                     <p-button label="Danger" severity="danger"></p-button>
+                    <p-button label="Contrast" severity="contrast"></p-button>
                 </div>
             </div>
 
