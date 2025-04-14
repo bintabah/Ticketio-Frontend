@@ -6,7 +6,6 @@ import { SideBarComponent } from './components/layout/side-bar/side-bar.componen
 import { MainContentComponent } from './components/layout/main-content/main-content.component';
 import { User } from './models/user.model';
 import { UserService } from './services/user.service';
-import { ButtonDemoComponent } from './components/button-demo/button-demo.component';
 import { ButtonModule } from 'primeng/button';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { DrawerModule } from 'primeng/drawer';
@@ -19,11 +18,10 @@ import { MenuItem } from 'primeng/api';
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet,
+    // RouterOutlet,
     TopBarComponent,
     SideBarComponent,
     MainContentComponent,
-    ButtonDemoComponent,
     ButtonModule,
     PanelMenuModule,
     DrawerModule,

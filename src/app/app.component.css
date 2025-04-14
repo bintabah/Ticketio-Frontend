@@ -3,9 +3,10 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #f8fafc;
     position: relative;
     font-family: var(--font-family);
+    overflow: hidden; /* Prevent body scroll */
+    background-color: #f1f5f9;
 }
 
 /* Top Bar Layout */
@@ -41,9 +42,9 @@
 .content-container {
     display: flex;
     flex: 1;
-    height: calc(100vh - 3.5rem);
     position: relative;
-    overflow: hidden;
+    height: calc(100vh - 3.5rem);
+    margin-top: 3.5rem; /* Height of topbar */
 }
 
 /* Sidebar Layout */
@@ -57,9 +58,12 @@
 /* Main Content Area */
 .main-content {
     flex: 1;
-    padding: 1.5rem;
-    overflow-y: auto;
+    margin-left: 250px;
     background-color: #f1f5f9;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0; /* Remove padding from here */
 }
 
 .content-section {
@@ -180,6 +184,28 @@
     .hover\:text-primary:hover {
         color: #1212ff !important;
     }
+}
+
+/* Top Bar - Fixed */
+:host ::ng-deep app-top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: #ffffff;
+}
+
+/* Sidebar - Fixed */
+:host ::ng-deep app-side-bar {
+    position: fixed;
+    top: 3.5rem; /* Height of topbar */
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    z-index: 900;
+    background-color: #1e293b;
+    overflow: hidden; /* Remove sidebar scroll */
 }
 
 /* Scrollbar styling */

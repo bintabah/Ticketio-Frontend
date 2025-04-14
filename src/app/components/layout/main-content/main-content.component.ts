@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
+import { FooterComponent } from '../footer/footer.component';
 
 interface User {
   id: number;
@@ -14,7 +14,11 @@ interface User {
 @Component({
   selector: 'app-main-content',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule],
+  imports: [
+    CommonModule,
+    TableModule,
+    FooterComponent
+  ],
   templateUrl: './main-content.component.html',
   styleUrl: './main-content.component.css'
 })
