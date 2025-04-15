@@ -1,7 +1,6 @@
 export interface Artist {
-    id: number;
-    nom: string;
-    prenom: string;
+    artistId: number;
+    name: string;
     genre: string;
   }
   
