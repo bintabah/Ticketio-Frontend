@@ -6,11 +6,24 @@ import { Router, RouterLink } from '@angular/router';
 import { BaseEntityLayoutComponent } from '../../shared/base-entity-layout/base-entity-layout.component';
 import { ArtistService } from '../../../services/artist.service';
 import { Artist } from '../../../models/artist.model';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-artists',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, RouterLink, BaseEntityLayoutComponent],
+  imports: [
+    CommonModule, 
+    TableModule, 
+    ButtonModule, 
+    RouterLink, 
+    BaseEntityLayoutComponent,
+    ConfirmDialogModule,
+    ToastModule
+  ],
+  providers: [ConfirmationService, MessageService],
   template: `
     <app-base-entity-layout
       title="Artists"
@@ -18,6 +31,9 @@ import { Artist } from '../../../models/artist.model';
     </app-base-entity-layout>
 
     <ng-template #contentTemplate>
+      <p-toast></p-toast>
+      <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+      
       <p-table [value]="artists" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
@@ -90,7 +106,12 @@ export class ArtistsComponent implements OnInit {
 
   artists: Artist[] = [];
 
-  constructor(private artistService: ArtistService, private router: Router) {}
+  constructor(
+    private artistService: ArtistService, 
+    private router: Router,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.loadArtists();
@@ -112,7 +133,28 @@ export class ArtistsComponent implements OnInit {
   }
 
   onDelete(artist: Artist): void {
-    console.log('Demande de suppression pour:', artist);
-    // TODO: Implémenter la logique de suppression
+    this.confirmationService.confirm({
+      message: `Êtes-vous sûr de vouloir supprimer l'artiste "${artist.name}" ?`,
+      accept: () => {
+        this.artistService.deleteArtist(artist.artistId).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: `L'artiste "${artist.name}" a été supprimé`
+            });
+            this.loadArtists(); // Recharger la liste après suppression
+          },
+          error: (error) => {
+            console.error('Erreur lors de la suppression:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'La suppression a échoué'
+            });
+          }
+        });
+      }
+    });
   }
 }
