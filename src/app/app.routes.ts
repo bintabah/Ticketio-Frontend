@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { UsersComponent } from './components/entities/users/users.component';
-import { EventsComponent } from './components/entities/events/events.component';
+import { UsersComponent } from './components/views/users/users.component';
+import { EventsComponent } from './components/views/events/events.component';
 // import { ButtonDemoComponent } from './components/button-demo/button-demo.component';
 
 export const routes: Routes = [

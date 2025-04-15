@@ -1,0 +1,93 @@
+<div class="user-form-container">
+  <h2>{{ isEditMode ? 'Modifier l\'utilisateur' : 'Créer un utilisateur' }}</h2>
+  
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="name" class="block">Nom</label>
+      <input 
+        type="text" 
+        id="name" 
+        pInputText
+        formControlName="name" 
+        class="w-full"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('name')?.invalid && userForm.get('name')?.touched}">
+      <small class="p-error" *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">
+        Le nom est requis
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="firstName" class="block">Prénom</label>
+      <input 
+        type="text" 
+        id="firstName" 
+        pInputText
+        formControlName="firstName" 
+        class="w-full"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched}">
+      <small class="p-error" *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+        Le prénom est requis
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="email" class="block">Email</label>
+      <input 
+        type="email" 
+        id="email" 
+        pInputText
+        formControlName="email" 
+        class="w-full"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('email')?.invalid && userForm.get('email')?.touched}">
+      <small class="p-error" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+        <span *ngIf="userForm.get('email')?.errors?.['required']">L'email est requis</span>
+        <span *ngIf="userForm.get('email')?.errors?.['email']">Veuillez entrer un email valide</span>
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="contact" class="block">Contact</label>
+      <input 
+        type="text" 
+        id="contact" 
+        pInputText
+        formControlName="contact" 
+        class="w-full"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('contact')?.invalid && userForm.get('contact')?.touched}">
+      <small class="p-error" *ngIf="userForm.get('contact')?.invalid && userForm.get('contact')?.touched">
+        Le contact est requis
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="role" class="block">Rôle</label>
+      <p-dropdown 
+        id="role" 
+        [options]="roleOptions" 
+        formControlName="role" 
+        optionLabel="label" 
+        optionValue="value"
+        placeholder="Sélectionner un rôle"
+        [ngClass]="{'ng-invalid ng-dirty': userForm.get('role')?.invalid && userForm.get('role')?.touched}"
+        class="w-full">
+      </p-dropdown>
+      <small class="p-error" *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+        Le rôle est requis
+      </small>
+    </div>
+
+    <div class="flex justify-content-end gap-2 mt-4">
+      <p-button 
+        type="button" 
+        label="Annuler" 
+        styleClass="p-button-secondary" 
+        (click)="onCancel()">
+      </p-button>
+      <p-button 
+        type="submit" 
+        [label]="isEditMode ? 'Modifier' : 'Créer'" 
+        [disabled]="userForm.invalid">
+      </p-button>
+    </div>
+  </form>
+</div> 

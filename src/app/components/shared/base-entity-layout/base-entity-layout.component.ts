@@ -1,4 +1,4 @@
-import { Component, Input, Type, Injector } from '@angular/core';
+import { Component, Input, Type, Injector, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -62,9 +62,9 @@ import { InputTextModule } from 'primeng/inputtext';
 export class BaseEntityLayoutComponent {
   @Input() title!: string;
   @Input() contentTemplate!: any;
+  @Output() add = new EventEmitter<void>();
 
   onAdd() {
-    // This will be implemented by child components
-    console.log('Add new entity');
+    this.add.emit();
   }
 } 

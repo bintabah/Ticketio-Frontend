@@ -5,6 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { BaseEntityLayoutComponent } from '../../shared/base-entity-layout/base-entity-layout.component';
 import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
+import { UsersFormComponent } from '../../forms/users/users.component';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-users',
@@ -13,12 +15,15 @@ import { UserService } from '../../../services/user.service';
     CommonModule,
     TableModule,
     ButtonModule,
-    BaseEntityLayoutComponent
+    BaseEntityLayoutComponent,
+    UsersFormComponent,
+    DialogModule
   ],
   template: `
     <app-base-entity-layout
       title="Users"
-      [contentTemplate]="contentTemplate">
+      [contentTemplate]="contentTemplate"
+      (add)="onCreate()">
     </app-base-entity-layout>
 
     <ng-template #contentTemplate>
@@ -51,6 +56,22 @@ import { UserService } from '../../../services/user.service';
           </tr>
         </ng-template>
       </p-table>
+
+      <p-dialog 
+        [(visible)]="displayEditDialog" 
+        [style]="{width: '50vw'}" 
+        [modal]="true"
+        [draggable]="false"
+        [resizable]="false"
+        [header]="selectedUser ? 'Modifier l\\'utilisateur' : 'Créer un utilisateur'"
+        (onHide)="onDialogHide()">
+        <app-users-form
+          *ngIf="displayEditDialog"
+          [user]="selectedUser"
+          (submitForm)="onSubmit($event)"
+          (cancel)="onCancel()"
+        ></app-users-form>
+      </p-dialog>
     </ng-template>
   `
 })
@@ -58,6 +79,8 @@ export class UsersComponent implements OnInit {
   @ViewChild('contentTemplate') contentTemplate!: TemplateRef<any>;
   
   users: User[] = [];
+  selectedUser: User | null = null;
+  displayEditDialog = false;
 
   constructor(private userService: UserService) {}
 
@@ -76,13 +99,57 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  onCreate() {
+    this.selectedUser = null; // Ensure we're in create mode
+    this.displayEditDialog = true;
+  }
+
   onEdit(user: User) {
-    console.log('Edit user:', user);
-    // Implement edit logic
+    this.selectedUser = {...user}; // Create a copy to avoid modifying the original
+    this.displayEditDialog = true;
   }
 
   onDelete(user: User) {
     console.log('Delete user:', user);
     // Implement delete logic
+  }
+
+  onSubmit(userData: User) {
+    if (this.selectedUser) {
+      // Edit mode
+      this.userService.updateUser(this.selectedUser.userId, userData).subscribe({
+        next: (updatedUser) => {
+          const index = this.users.findIndex(u => u.userId === updatedUser.userId);
+          if (index !== -1) {
+            this.users[index] = updatedUser;
+          }
+          this.displayEditDialog = false;
+          this.selectedUser = null;
+        },
+        error: (error) => {
+          console.error('Error updating user:', error);
+        }
+      });
+    } else {
+      // Create mode
+      this.userService.createUser(userData).subscribe({
+        next: (newUser) => {
+          this.users = [...this.users, newUser]; // Add new user to the list
+          this.displayEditDialog = false;
+        },
+        error: (error) => {
+          console.error('Error creating user:', error);
+        }
+      });
+    }
+  }
+
+  onCancel() {
+    this.displayEditDialog = false;
+    this.selectedUser = null;
+  }
+
+  onDialogHide() {
+    this.selectedUser = null;
   }
 } 
