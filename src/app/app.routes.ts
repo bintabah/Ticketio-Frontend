@@ -1,13 +1,11 @@
 import { Routes } from '@angular/router';
 import { UsersComponent } from './components/views/users/users.component';
 import { EventsComponent } from './components/views/events/events.component';
-// import { ButtonDemoComponent } from './components/button-demo/button-demo.component';
+import { ArtistsComponent } from './components/entities/artists/artists.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'users', pathMatch: 'full' },
     { path: 'users', component: UsersComponent },
     { path: 'events', component: EventsComponent },
-    // Add other entity routes here as they are created
-    // { path: 'artists', component: ArtistsComponent },
-    // { path: 'tickets', component: TicketsComponent },
+    { path: 'artists', component: ArtistsComponent },
 ]; 
