@@ -13,4 +13,8 @@ export class EventService extends BaseEntityService<Event> {
   constructor(http: HttpClient) {
     super(http);
   }
+
+  deleteEvent(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 } 

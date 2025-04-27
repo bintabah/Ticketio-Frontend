@@ -32,7 +32,10 @@ import { MessageService } from 'primeng/api';
 
     <ng-template #contentTemplate>
       <p-toast></p-toast>
-      <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+      <p-confirmDialog header="Confirmation" 
+                      icon="pi pi-exclamation-triangle"
+                      acceptLabel="Oui"
+                      rejectLabel="Non"></p-confirmDialog>
       
       <p-table [value]="artists" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
