@@ -161,7 +161,7 @@ export class EventsComponent implements OnInit {
 
   onDelete(event: Event) {
     this.confirmationService.confirm({
-      message: `Êtes-vous sûr de vouloir supprimer l'événement "${event.label}" ?`,
+      message: `L'événement "${event.label}" pourrait avoir des tickets ; ils seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
       accept: () => {
         this.eventService.deleteEvent(event.eventId).subscribe({
           next: () => {

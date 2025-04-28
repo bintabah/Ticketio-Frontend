@@ -128,7 +128,7 @@ export class UsersComponent implements OnInit {
 
   onDelete(user: User) {
     this.confirmationService.confirm({
-      message: `Êtes-vous sûr de vouloir supprimer l'utilisateur "${user.firstName} ${user.name}" ?`,
+      message: `Attention, l'utilisateur "${user.firstName} ${user.name}" pourrait avoir des tickets ; ils seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
       accept: () => {
         this.userService.deleteUser(user.userId).subscribe({
           next: () => {
