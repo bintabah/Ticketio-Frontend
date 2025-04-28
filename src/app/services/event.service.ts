@@ -17,4 +17,8 @@ export class EventService extends BaseEntityService<Event> {
   deleteEvent(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+    // Dans EventService, s'il n'existe pas déjà
+  getEvent(id: number): Observable<Event> {
+    return this.http.get<Event>(`${this.apiUrl}/${id}`);
+  }
 } 
