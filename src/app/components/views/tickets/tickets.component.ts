@@ -15,6 +15,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
 import { BadgeModule } from 'primeng/badge';
+import { AccordionModule } from 'primeng/accordion';
+import { AvatarModule } from 'primeng/avatar';
 
 interface TicketGroup {
   event: Event;
@@ -34,7 +36,9 @@ interface TicketGroup {
     ProgressSpinnerModule,
     TagModule,
     DividerModule,
-    BadgeModule
+    BadgeModule,
+    AccordionModule,
+    AvatarModule
   ],
   providers: [ConfirmationService, MessageService],
   template: `
@@ -59,32 +63,25 @@ interface TicketGroup {
         <p class="text-xl text-gray-500">Aucun ticket trouvé.</p>
       </div>
       
-      <div *ngFor="let group of ticketGroups" class="mb-8">
-        <p-card styleClass="shadow-lg">
+      <p-accordion [multiple]="true" [styleClass]="'shadow-sm'" *ngIf="!loading && ticketGroups.length > 0">
+        <p-accordionTab *ngFor="let group of ticketGroups">
           <ng-template pTemplate="header">
-            <div class="bg-gradient-to-r from-blue-600 to-blue-800 p-4 text-white rounded-t-lg">
-              <div class="flex items-center">
-                <i class="pi pi-calendar-plus text-2xl mr-3"></i>
-                <div>
-                  <h2 class="text-2xl font-bold">{{ group.event.label }}</h2>
-                  <div class="flex items-center mt-2 text-sm">
-                    <i class="pi pi-calendar mr-2"></i>
-                    <span>{{ group.event.date | date:'dd/MM/yyyy' }}</span>
-                    <i class="pi pi-map-marker ml-4 mr-2"></i>
-                    <span>{{ group.event.place }}</span>
-                  </div>
+            <span class="flex items-center gap-3 w-full">
+              <i class="pi pi-calendar-event text-xl text-blue-500"></i>
+              <span>
+                <span class="font-bold">{{ group.event.label }}</span>
+                <div class="flex items-center text-sm text-gray-500 mt-1">
+                  <i class="pi pi-calendar mr-2"></i>
+                  <span>{{ group.event.date | date:'dd/MM/yyyy' }}</span>
+                  <i class="pi pi-map-marker ml-4 mr-2"></i>
+                  <span>{{ group.event.place }}</span>
                 </div>
-              </div>
-            </div>
+              </span>
+              <p-badge [value]="group.tickets.length.toString()" severity="info" class="ml-auto"></p-badge>
+            </span>
           </ng-template>
           
-          <div class="px-2 bg-white">
-            <div class="flex justify-between items-center mb-3">
-              <div class="text-sm text-gray-500">
-                <span class="font-medium">{{ group.tickets.length }}</span> tickets pour cet événement
-              </div>
-            </div>
-            
+          <div class="px-2 pb-2">
             <p-table [value]="group.tickets" styleClass="p-datatable-sm p-datatable-striped"
                     [tableStyle]="{'min-width': '50rem'}" [rowHover]="true">
               <ng-template pTemplate="header">
@@ -138,8 +135,8 @@ interface TicketGroup {
               </ng-template>
             </p-table>
           </div>
-        </p-card>
-      </div>
+        </p-accordionTab>
+      </p-accordion>
     </div>
   `,
   styles: [`
@@ -154,8 +151,13 @@ interface TicketGroup {
         font-weight: 600;
       }
       
-      .p-card .p-card-body {
-        padding-bottom: 1rem;
+      .p-accordion .p-accordion-header-link {
+        padding: 1.25rem;
+      }
+      
+      .p-accordion .p-accordion-content {
+        padding: 0;
+        border: none;
       }
       
       .p-tag {
