@@ -106,25 +106,20 @@ export class EventsFormComponent implements OnInit {
 
   onSubmit() {
     if (this.eventForm.valid) {
-      const formValue = this.eventForm.value;
-      
       const eventData: Event = {
-        label: formValue.label,
-        description: formValue.description,
-        date: formValue.date instanceof Date ? formValue.date.toISOString() : formValue.date,
-        place: formValue.place,
-        price: Number(formValue.price),
-        capacity: Number(formValue.capacity),
-        status: formValue.status,
-        popularity: Number(formValue.popularity),
+        eventId: this.event?.eventId,
+        label: this.eventForm.get('label')?.value,
+        description: this.eventForm.get('description')?.value,
+        date: this.eventForm.get('date')?.value,
+        place: this.eventForm.get('place')?.value,
+        price: Number(this.eventForm.get('price')?.value),
+        capacity: Number(this.eventForm.get('capacity')?.value),
+        status: this.eventForm.get('status')?.value,
+        popularity: Number(this.eventForm.get('popularity')?.value),
         artist: this.selectedArtist ? {
           artistId: this.selectedArtist.artistId
-        } as Artist : null
+        } as Artist : undefined
       };
-
-      if (this.event?.eventId) {
-        eventData.eventId = this.event.eventId;
-      }
 
       this.submitForm.emit(eventData);
     }

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     selector: 'app-footer',
     template: `
         <footer class="footer">
-            <span>© 2024 Ticketio. All rights reserved.</span>
+            <span>© 2025 Ticketio. All rights reserved.</span>
         </footer>
     `,
     styles: [`

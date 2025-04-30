@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -18,7 +18,8 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    ToastModule
+    ToastModule,
+    RouterLink
   ],
   providers: [MessageService],
   template: `
@@ -27,7 +28,7 @@ import { MessageService } from 'primeng/api';
       
       <div class="login-card">
         <div class="login-header">
-          <h1>Ticketio</h1>
+          <h1><a routerLink="/">Ticketio</a></h1>
         </div>
         
         <div class="login-content">
@@ -65,12 +66,12 @@ import { MessageService } from 'primeng/api';
   `,
   styles: [`
     .login-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    background: linear-gradient(to right, #f5f7fa, #eef2f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      background: linear-gradient(to right, #f5f7fa, #eef2f7);
     }
 
     .login-card {
@@ -82,15 +83,24 @@ import { MessageService } from 'primeng/api';
     }
     
     .login-header {
-      background-color: #1a2b47;
+      background-color: #1e293b;
       padding: 20px;
       text-align: center;
     }
     
     .login-header h1 {
-      color: white;
       margin: 0;
       font-size: 24px;
+    }
+
+    .login-header h1 a {
+      color: white;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .login-header h1 a:hover {
+      opacity: 0.9;
     }
     
     .login-content {
@@ -149,13 +159,14 @@ import { MessageService } from 'primeng/api';
     .login-button button {
       width: 100%;
       padding: 12px;
-      background-color: #4CAF50;
+      background-color: #1e293b;
       color: white;
       border: none;
       border-radius: 3px;
       cursor: pointer;
       font-weight: bold;
       position: relative;
+      transition: background-color 0.2s;
     }
     
     .login-button button:disabled {
@@ -164,7 +175,7 @@ import { MessageService } from 'primeng/api';
     }
     
     .login-button button:not(:disabled):hover {
-      background-color: #45a049;
+      background-color: #2d3b4e;
     }
     
     .loader {

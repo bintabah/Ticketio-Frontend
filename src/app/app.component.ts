@@ -47,7 +47,7 @@ export class AppComponent implements OnInit {
 
     this.userService.getUsers().subscribe(
       (data: User[]) => {
-        console.log('Réponse du backend :', data);
+        // console.log('Réponse du backend :', data);
         this.users = data;
       },
       (error: Error) => {

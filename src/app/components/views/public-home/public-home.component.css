@@ -2,6 +2,8 @@
 .public-home-container {
   min-height: 100vh;
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Header */
@@ -20,7 +22,13 @@
   gap: 0.5rem;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1e3a8a;
+  color: #1e293b;
+}
+
+.logo-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .logo i {
@@ -35,18 +43,18 @@
 
 .nav-link {
   text-decoration: none;
-  color: #1e3a8a;
+  color: #1e293b;
   font-weight: 500;
 }
 
 .cart-icon {
-  color: #1e3a8a;
+  color: #1e293b;
   font-size: 1.2rem;
 }
 
 /* Hero Section */
 .hero-section {
-  background-color: #1e3a8a;
+  background-color: #1e293b;
   color: white;
   padding: 4rem 2rem;
   text-align: center;
@@ -96,51 +104,49 @@
 
 /* Popular Concerts Section */
 .popular-concerts {
-  padding: 4rem 2rem;
+  padding: 4rem 12rem;
+  flex: 1;
 }
 
 .popular-concerts h2 {
   font-size: 2rem;
-  color: #1e3a8a;
+  color: #1e293b;
   margin-bottom: 2rem;
 }
 
 .concert-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 
 .concert-card {
-  background: white;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-}
-
-.concert-card:hover {
-  transform: translateY(-4px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: white;
 }
 
 .concert-image {
+  width: 100%;
   height: 200px;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  display: block;
 }
 
-.weeknd-image {
-  background-image: url('/assets/images/weeknd.jpg');
+.placeholder-image {
+  background: linear-gradient(110deg, #eff1f3 8%, #e2e8f0 18%, #eff1f3 33%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
 }
 
-.billie-image {
-  background-image: url('/assets/images/billie.jpg');
-}
-
-.imagine-dragons-image {
-  background-image: url('/assets/images/imagine-dragons.jpg');
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
 }
 
 .concert-info {
@@ -149,7 +155,7 @@
 
 .concert-info h3 {
   font-size: 1.25rem;
-  color: #1e3a8a;
+  color: #1e293b;
   margin-bottom: 0.5rem;
 }
 
@@ -158,8 +164,117 @@
   margin-bottom: 0.5rem;
 }
 
+.price-tickets-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
 .price {
-  font-weight: bold;
-  color: #1e3a8a !important;
   font-size: 1.25rem;
+  font-weight: bold;
+  color: #4F46E5;
+  margin: 0;
+}
+
+.remaining-tickets {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #4f46e5;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.remaining-tickets i {
+  font-size: 1rem;
+}
+
+/* Add a warning color when tickets are running low */
+.remaining-tickets.low {
+  color: #f59e0b;
+}
+
+/* Add a danger color when almost sold out */
+.remaining-tickets.critical {
+  color: #dc2626;
+}
+
+.placeholder-card .concert-info h3,
+.placeholder-card .concert-info p {
+  color: #e2e8f0;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+/* Footer */
+.footer {
+  background-color: #1e293b;
+  color: #fff;
+  padding: 4rem 2rem 1rem;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.footer-section h4 {
+  color: #fff;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.footer-section p {
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-section ul li a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-section ul li a:hover {
+  color: #fff;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-link {
+  color: #94a3b8;
+  font-size: 1.5rem;
+  transition: color 0.2s;
+}
+
+.social-link:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #334155;
+  color: #94a3b8;
 } 

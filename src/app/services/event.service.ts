@@ -2,23 +2,33 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Event } from '../models/event.model';
-import { BaseEntityService } from './base-entity.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EventService extends BaseEntityService<Event> {
-  protected apiUrl = '/api/events';
+export class EventService {
+  
+  private apiUrl = '/api/events';
 
-  constructor(http: HttpClient) {
-    super(http);
+  constructor(private http: HttpClient) {}
+
+  getEvents(): Observable<Event[]> {
+    return this.http.get<Event[]>(this.apiUrl);
   }
 
-  deleteEvent(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  getEvent(eventId: number): Observable<Event> {
+    return this.http.get<Event>(`${this.apiUrl}/${eventId}`);
   }
-    // Dans EventService, s'il n'existe pas déjà
-  getEvent(id: number): Observable<Event> {
-    return this.http.get<Event>(`${this.apiUrl}/${id}`);
+
+  createEvent(event: Event): Observable<Event> {
+    return this.http.post<Event>(this.apiUrl, event);
+  }
+
+  updateEvent(event: Event): Observable<Event> {
+    return this.http.put<Event>(`${this.apiUrl}/${event.eventId}`, event);
+  }
+
+  deleteEvent(eventId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${eventId}`);
   }
 } 
