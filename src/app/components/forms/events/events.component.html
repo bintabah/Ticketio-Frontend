@@ -1,0 +1,62 @@
+<div class="event-form-container">
+  <h2>{{ isEditMode ? 'Modifier l\'événement' : 'Créer un événement' }}</h2>
+  
+  <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="form-grid">
+    <div class="form-field">
+      <label for="label">Label</label>
+      <input id="label" type="text" pInputText formControlName="label" />
+    </div>
+
+    <div class="form-field">
+      <label for="description">Description</label>
+      <textarea id="description" pInputTextarea formControlName="description" rows="4"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="date">Date</label>
+        <p-calendar id="date" formControlName="date" [showTime]="true" dateFormat="dd/mm/yy"></p-calendar>
+      </div>
+
+      <div class="form-field">
+        <label for="place">Lieu</label>
+        <input id="place" type="text" pInputText formControlName="place" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="price">Prix</label>
+        <input id="price" type="number" pInputText formControlName="price" />
+      </div>
+
+      <div class="form-field">
+        <label for="capacity">Capacité</label>
+        <input id="capacity" type="number" pInputText formControlName="capacity" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <label for="popularity">Popularité</label>
+        <input id="popularity" type="number" pInputText formControlName="popularity" />
+      </div>
+
+      <div class="form-field">
+        <label for="artist">Artiste</label>
+        <p-select id="artist" 
+                  [options]="artists" 
+                  [(ngModel)]="selectedArtist"
+                  [ngModelOptions]="{standalone: true}"
+                  optionLabel="name" 
+                  [filter]="true"
+                  placeholder="Sélectionner un artiste"></p-select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" pButton label="Annuler" class="p-button-text" (click)="onCancel()"></button>
+      <button type="submit" pButton label="Enregistrer" [disabled]="!eventForm.valid"></button>
+    </div>
+  </form>
+</div> 
