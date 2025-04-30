@@ -63,7 +63,6 @@ export class EventsFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadArtists();
     if (this.event) {
       const eventData = {
         ...this.event,
@@ -71,17 +70,23 @@ export class EventsFormComponent implements OnInit {
         price: Number(this.event.price),
         capacity: Number(this.event.capacity),
         popularity: Number(this.event.popularity),
-        artist: this.event.artist
+        artist: this.event.artist?.artistId
       };
       this.eventForm.patchValue(eventData);
+      this.selectedArtist = this.event.artist;
     }
+    this.loadArtists();
   }
 
   private loadArtists() {
     this.artistService.getAll().subscribe(artists => {
       this.artists = artists;
-      if (this.event?.artist && !this.artists.some(a => a.artistId === this.event?.artist?.artistId)) {
-        this.artists.push(this.event.artist);
+      if (this.event?.artist) {
+        const existingArtist = this.artists.find(a => a.artistId === this.event?.artist?.artistId);
+        if (!existingArtist) {
+          this.artists = [...this.artists, this.event.artist];
+        }
+        this.selectedArtist = existingArtist || this.event.artist;
       }
     });
   }
