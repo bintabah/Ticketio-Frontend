@@ -55,7 +55,9 @@ export class AppComponent implements OnInit {
       }
     );
   }
+
   get showLayout(): boolean {
-    return this.isLoggedIn && this.router.url !== '/login';
+    const publicRoutes = ['/', '/login'];
+    return this.isLoggedIn && !publicRoutes.includes(this.router.url);
   }
 }
