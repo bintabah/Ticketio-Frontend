@@ -52,10 +52,6 @@ import { MessageService } from 'primeng/api';
               </small>
             </div>
             
-            <div class="forgot-password">
-              <a>Mot de passe oublié ?</a>
-            </div>
-            
             <div class="login-button">
               <button type="submit" [disabled]="loginForm.invalid || loading">
                 SE CONNECTER
