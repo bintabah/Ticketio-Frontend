@@ -9,6 +9,8 @@ import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { EventsFormComponent } from '../../forms/events/events.component';
 
 @Component({
   selector: 'app-events',
@@ -19,13 +21,16 @@ import { MessageService } from 'primeng/api';
     ButtonModule,
     BaseEntityLayoutComponent,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    DialogModule,
+    EventsFormComponent
   ],
   providers: [ConfirmationService, MessageService],
   template: `
     <app-base-entity-layout
       title="Events"
-      [contentTemplate]="contentTemplate">
+      [contentTemplate]="contentTemplate"
+      (add)="onCreate()">
     </app-base-entity-layout>
 
     <ng-template #contentTemplate>
@@ -72,6 +77,22 @@ import { MessageService } from 'primeng/api';
           </tr>
         </ng-template>
       </p-table>
+
+      <p-dialog 
+        [(visible)]="displayEditDialog" 
+        [style]="{width: '50vw'}" 
+        [modal]="true"
+        [draggable]="false"
+        [resizable]="false"
+        [header]="dialogHeader"
+        (onHide)="onDialogHide()">
+        <app-events-form
+          *ngIf="displayEditDialog"
+          [event]="selectedEvent"
+          (submitForm)="onSubmit($event)"
+          (cancel)="onCancel()"
+        ></app-events-form>
+      </p-dialog>
     </ng-template>
   `,
   styles: [`
@@ -85,34 +106,28 @@ import { MessageService } from 'primeng/api';
       border: 1px solid transparent;
     }
     
+    .status-draft {
+      background-color: #f3f4f6;
+      color: #4b5563;
+      border-color: #d1d5db;
+    }
+    
     .status-active {
       background-color: #dcfce7;
       color: #166534;
       border-color: #86efac;
     }
     
-    .status-cancelled {
+    .status-closed {
       background-color: #fee2e2;
       color: #991b1b;
       border-color: #fca5a5;
     }
     
-    .status-soldout {
+    .status-cancelled {
       background-color: #fef3c7;
       color: #92400e;
       border-color: #fcd34d;
-    }
-    
-    .status-upcoming {
-      background-color: #dbeafe;
-      color: #1e40af;
-      border-color: #93c5fd;
-    }
-    
-    .status-en-cours {
-      background-color: #fff7ed;
-      color: #c2410c;
-      border-color: #fdba74;
     }
   `]
 })
@@ -120,6 +135,9 @@ export class EventsComponent implements OnInit {
   @ViewChild('contentTemplate') contentTemplate!: TemplateRef<any>;
   
   events: Event[] = [];
+  displayEditDialog = false;
+  selectedEvent: Event | undefined;
+  dialogHeader = '';
 
   constructor(
     private eventService: EventService,
@@ -127,7 +145,7 @@ export class EventsComponent implements OnInit {
     private messageService: MessageService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadEvents();
   }
 
@@ -144,33 +162,92 @@ export class EventsComponent implements OnInit {
 
   getStatusClass(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'Active': 'status-badge status-active',
-      'Cancelled': 'status-badge status-cancelled',
-      'Soldout': 'status-badge status-soldout',
-      'Upcoming': 'status-badge status-upcoming',
-      'En cours': 'status-badge status-en-cours'
+      'DRAFT': 'status-badge status-draft',
+      'ACTIVE': 'status-badge status-active',
+      'CLOSED': 'status-badge status-closed',
+      'CANCELLED': 'status-badge status-cancelled'
     };
     
-    return statusMap[status] || 'status-badge';
+    return statusMap[status] || 'status-badge status-draft';
+  }
+
+  onCreate() {
+    this.selectedEvent = undefined;
+    this.dialogHeader = 'Créer un événement';
+    this.displayEditDialog = true;
   }
 
   onEdit(event: Event) {
-    console.log('Edit event:', event);
-    // Implement edit logic
+    this.selectedEvent = { ...event };
+    this.dialogHeader = 'Modifier l\'événement';
+    this.displayEditDialog = true;
+  }
+
+  onSubmit(event: Event) {
+    if (event.eventId) {
+      this.eventService.update(event.eventId, event).subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: `L'événement "${event.label}" a été modifié`
+          });
+          this.loadEvents();
+          this.displayEditDialog = false;
+        },
+        error: (error) => {
+          console.error('Error updating event:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'La modification a échoué'
+          });
+        }
+      });
+    } else {
+      console.log('Event data being sent to server:', event);
+      this.eventService.create(event).subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: `L'événement "${event.label}" a été créé`
+          });
+          this.loadEvents();
+          this.displayEditDialog = false;
+        },
+        error: (error) => {
+          console.error('Error creating event:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'La création a échoué'
+          });
+        }
+      });
+    }
+  }
+
+  onCancel() {
+    this.displayEditDialog = false;
+  }
+
+  onDialogHide() {
+    this.selectedEvent = undefined;
   }
 
   onDelete(event: Event) {
     this.confirmationService.confirm({
-      message: `L'événement "${event.label}" pourrait avoir des tickets ; ils seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
+      message: `L'événement <strong>${event.label}</strong> pourrait avoir des tickets. <br> Ils seront également supprimés. <br> <br> Êtes-vous sûr de vouloir le supprimer ?`,
       accept: () => {
-        this.eventService.deleteEvent(event.eventId).subscribe({
+        this.eventService.deleteEvent(event.eventId!).subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',
               detail: `L'événement "${event.label}" a été supprimé`
             });
-            this.loadEvents(); // Recharger la liste des événements
+            this.loadEvents();
           },
           error: (error) => {
             console.error('Erreur lors de la suppression:', error);

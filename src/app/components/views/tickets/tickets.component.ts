@@ -267,7 +267,10 @@ export class TicketsComponent implements OnInit {
       'Valid': 'success',
       'Used': 'info',
       'Cancelled': 'danger',
-      'En cours': 'warn' 
+      'DRAFT': 'secondary',
+      'ACTIVE': 'success',
+      'CLOSED': 'danger',
+      'CANCELLED': 'warn'
     };
     
     return statusMap[status] || 'info';
@@ -275,7 +278,7 @@ export class TicketsComponent implements OnInit {
 
   onDelete(ticket: Ticket): void {
     this.confirmationService.confirm({
-      message: `Êtes-vous sûr de vouloir supprimer le ticket "${ticket.code}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer le ticket <strong>${ticket.noPlace} - ${ticket.code}</strong> ?`,
       header: 'Confirmation de suppression',
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
@@ -285,7 +288,7 @@ export class TicketsComponent implements OnInit {
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',
-              detail: `Le ticket "${ticket.code}" a été supprimé`
+              detail: `Le ticket "<strong>"${ticket.noPlace} - ${ticket.code}"</strong>" a été supprimé`
             });
             this.loadTickets();
           },
