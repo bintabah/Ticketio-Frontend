@@ -150,7 +150,7 @@ export class EventsComponent implements OnInit {
   }
 
   loadEvents() {
-    this.eventService.getAll().subscribe({
+    this.eventService.getEvents().subscribe({
       next: (data) => {
         this.events = data;
       },
@@ -185,7 +185,7 @@ export class EventsComponent implements OnInit {
 
   onSubmit(event: Event) {
     if (event.eventId) {
-      this.eventService.update(event.eventId, event).subscribe({
+      this.eventService.updateEvent(event).subscribe({
         next: (response) => {
           this.messageService.add({
             severity: 'success',
@@ -205,8 +205,7 @@ export class EventsComponent implements OnInit {
         }
       });
     } else {
-      console.log('Event data being sent to server:', event);
-      this.eventService.create(event).subscribe({
+      this.eventService.createEvent(event).subscribe({
         next: (response) => {
           this.messageService.add({
             severity: 'success',

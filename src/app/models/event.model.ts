@@ -4,13 +4,14 @@ import { Ticket } from './ticket.model';
 export interface Event {
   eventId?: number;
   label: string;
+  description: string;
   date: string;
   place: string;
   price: number;
-  description: string;
   capacity: number;
   status: string;
   popularity: number;
-  artist: Artist | null;
+  artist?: Artist;
   tickets?: Ticket[];
+  imageUrl?: string;
 } 
