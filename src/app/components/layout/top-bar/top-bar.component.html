@@ -5,10 +5,10 @@
             <i class="pi pi-search search-icon"></i>
             <input type="text" placeholder="Search..." />
         </div>
-        <div class="user-section">
+        <div class="user-section" *ngIf="currentUser">
             <i class="pi pi-user"></i>
-            <span>John Doe</span>
+            <span>{{ currentUser.name }}</span>
         </div>
-        <i class="pi pi-sign-out logout-icon"></i>
+        <i class="pi pi-sign-out logout-icon" (click)="logout()" pTooltip="Déconnexion"></i>
     </div>
 </div>
