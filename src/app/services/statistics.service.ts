@@ -14,6 +14,16 @@ interface Ticket {
   status: string;
 }
 
+interface TopEvent {
+  eventId: number;
+  label: string;
+  date: Date;
+  place: string;
+  price: number;
+  ticketsSold: number;
+  revenue: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -63,6 +73,44 @@ export class StatisticsService {
     return this.http.get<any[]>(`${this.apiUrl}/users`).pipe(
       map(users => users.length),
       tap(total => console.log('Total users:', total))
+    );
+  }
+
+  getTotalEvents(): Observable<number> {
+    return this.http.get<any[]>(`${this.apiUrl}/events`).pipe(
+      map(events => events.length),
+      tap(total => console.log('Total events:', total))
+    );
+  }
+
+  getTopEvents(): Observable<TopEvent[]> {
+    return forkJoin({
+      events: this.http.get<any[]>(`${this.apiUrl}/events`),
+      tickets: this.http.get<any[]>(`${this.apiUrl}/tickets`)
+    }).pipe(
+      map(({ events, tickets }) => {
+        // Create a map to count tickets per event
+        const ticketCounts = new Map<number, number>();
+        tickets.forEach(ticket => {
+          const eventId = ticket.eventId;
+          ticketCounts.set(eventId, (ticketCounts.get(eventId) || 0) + 1);
+        });
+
+        // Transform events with ticket counts and revenue
+        const topEvents = events.map(event => ({
+          eventId: event.eventId,
+          label: event.label,
+          date: new Date(event.date),
+          place: event.place,
+          price: event.price,
+          ticketsSold: ticketCounts.get(event.eventId) || 0,
+          revenue: (ticketCounts.get(event.eventId) || 0) * event.price
+        }));
+
+        // Sort by tickets sold in descending order
+        return topEvents.sort((a, b) => b.ticketsSold - a.ticketsSold).slice(0, 5);
+      }),
+      tap(topEvents => console.log('Top events:', topEvents))
     );
   }
 } 

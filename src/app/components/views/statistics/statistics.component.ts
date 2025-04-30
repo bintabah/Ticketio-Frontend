@@ -6,9 +6,11 @@ import { ChartModule } from 'primeng/chart';
 import { StatisticsService } from '../../../services/statistics.service';
 
 interface TopEvent {
-  name: string;
+  eventId: number;
+  label: string;
   date: Date;
-  location: string;
+  place: string;
+  price: number;
   ticketsSold: number;
   revenue: number;
 }
@@ -38,37 +40,47 @@ export class StatisticsComponent implements OnInit {
     
     this.topEvents = [
       {
-        name: 'Summer Festival 2024',
+        eventId: 1,
+        label: 'Summer Festival 2024',
         date: new Date('2024-07-15'),
-        location: 'Central Park',
+        place: 'Central Park',
+        price: 50,
         ticketsSold: 450,
         revenue: 22500
       },
       {
-        name: 'Rock Concert',
+        eventId: 2,
+        label: 'Rock Concert',
         date: new Date('2024-06-20'),
-        location: 'Stadium Arena',
+        place: 'Stadium Arena',
+        price: 50,
         ticketsSold: 380,
         revenue: 19000
       },
       {
-        name: 'Jazz Night',
+        eventId: 3,
+        label: 'Jazz Night',
         date: new Date('2024-05-30'),
-        location: 'Music Hall',
+        place: 'Music Hall',
+        price: 50,
         ticketsSold: 280,
         revenue: 14000
       },
       {
-        name: 'Classical Symphony',
+        eventId: 4,
+        label: 'Classical Symphony',
         date: new Date('2024-06-05'),
-        location: 'Opera House',
+        place: 'Opera House',
+        price: 50,
         ticketsSold: 250,
         revenue: 12500
       },
       {
-        name: 'Dance Festival',
+        eventId: 5,
+        label: 'Dance Festival',
         date: new Date('2024-07-01'),
-        location: 'City Square',
+        place: 'City Square',
+        price: 50,
         ticketsSold: 220,
         revenue: 11000
       }
@@ -100,6 +112,24 @@ export class StatisticsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading total users:', error);
+      }
+    });
+
+    this.statisticsService.getTotalEvents().subscribe({
+      next: (total) => {
+        this.totalEvents = total;
+      },
+      error: (error) => {
+        console.error('Error loading total events:', error);
+      }
+    });
+
+    this.statisticsService.getTopEvents().subscribe({
+      next: (events) => {
+        this.topEvents = events;
+      },
+      error: (error) => {
+        console.error('Error loading top events:', error);
       }
     });
   }
