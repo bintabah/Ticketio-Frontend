@@ -44,7 +44,13 @@
 
       <div class="form-field">
         <label for="artist">Artiste</label>
-        <p-dropdown id="artist" [options]="artists" formControlName="artist" optionLabel="name" [filter]="true"></p-dropdown>
+        <p-select id="artist" 
+                  [options]="artists" 
+                  [(ngModel)]="selectedArtist"
+                  [ngModelOptions]="{standalone: true}"
+                  optionLabel="name" 
+                  [filter]="true"
+                  placeholder="Sélectionner un artiste"></p-select>
       </div>
     </div>
 

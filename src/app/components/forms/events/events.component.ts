@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Event } from '../../../models/event.model';
 import { Artist } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/artist.service';
 import { CalendarModule } from 'primeng/calendar';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextarea } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
@@ -18,8 +18,9 @@ import { ButtonModule } from 'primeng/button';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     CalendarModule,
-    DropdownModule,
+    SelectModule,
     InputTextModule,
     InputTextarea,
     ButtonModule
@@ -36,6 +37,7 @@ export class EventsFormComponent implements OnInit {
 
   eventForm: FormGroup;
   artists: Artist[] = [];
+  selectedArtist: Artist | null = null;
   statusOptions = [
     { label: 'Draft', value: 'DRAFT' },
     { label: 'Active', value: 'ACTIVE' },
@@ -56,22 +58,19 @@ export class EventsFormComponent implements OnInit {
       price: [0, [Validators.required, Validators.min(0)]],
       capacity: [0, [Validators.required, Validators.min(1)]],
       status: ['ACTIVE', Validators.required],
-      popularity: [0, [Validators.required, Validators.min(0)]],
-      artist: [null, Validators.required]
+      popularity: [0, [Validators.required, Validators.min(0)]]
     });
   }
 
   ngOnInit() {
     this.loadArtists();
     if (this.event) {
-      // Convert string date to Date object if needed
       const eventData = {
         ...this.event,
         date: this.event.date instanceof Date ? this.event.date : new Date(this.event.date),
         price: Number(this.event.price),
         capacity: Number(this.event.capacity),
         popularity: Number(this.event.popularity),
-        // Create proper artist object structure
         artist: this.event.artist
       };
       this.eventForm.patchValue(eventData);
@@ -81,7 +80,6 @@ export class EventsFormComponent implements OnInit {
   private loadArtists() {
     this.artistService.getAll().subscribe(artists => {
       this.artists = artists;
-      // If we have an event with an artist, ensure the artist is in the list
       if (this.event?.artist && !this.artists.some(a => a.artistId === this.event?.artist?.artistId)) {
         this.artists.push(this.event.artist);
       }
@@ -92,16 +90,13 @@ export class EventsFormComponent implements OnInit {
     if (this.eventForm.valid) {
       const formValue = this.eventForm.value;
       
-      // Ensure proper types for the backend
       const eventData: Event = {
         ...formValue,
         eventId: this.event?.eventId || null,
         price: Number(formValue.price),
         capacity: Number(formValue.capacity),
         popularity: Number(formValue.popularity),
-        // Convert to proper format expected by Java Date
         date: formValue.date instanceof Date ? formValue.date.toISOString() : formValue.date,
-        // Create proper artist object structure
         artist: this.artists.find(a => a.artistId === formValue.artist) || null
       };
 
