@@ -1,0 +1,76 @@
+<div class="statistics-container">
+  <!-- Summary Cards Row -->
+  <div class="grid-container">
+    <!-- Total Sales Card -->
+    <div class="stat-card sales-card">
+      <h2>Total Sales</h2>
+      <div class="stat-value">
+        <span class="currency">$</span>
+        <span class="amount">{{totalSales | number:'1.0-0'}}</span>
+        <span class="trend positive" *ngIf="salesGrowth > 0">+{{salesGrowth}}%</span>
+      </div>
+    </div>
+
+    <!-- Tickets Card -->
+    <div class="stat-card">
+      <h2>Total Tickets</h2>
+      <div class="stat-value">
+        <span class="amount">{{totalTickets}}</span>
+        <i class="pi pi-ticket"></i>
+      </div>
+    </div>
+
+    <!-- Users Card -->
+    <div class="stat-card">
+      <h2>Active Users</h2>
+      <div class="stat-value">
+        <span class="amount">{{totalUsers}}</span>
+        <i class="pi pi-users"></i>
+      </div>
+    </div>
+
+    <!-- Events Card -->
+    <div class="stat-card">
+      <h2>Total Events</h2>
+      <div class="stat-value">
+        <span class="amount">{{totalEvents}}</span>
+        <i class="pi pi-calendar"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Events Table -->
+  <div class="events-table-container">
+    <h2>Top Selling Events</h2>
+    <p-table [value]="topEvents" [rows]="5" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Event Name</th>
+          <th>Date</th>
+          <th>Location</th>
+          <th>Price</th>
+          <th>Tickets Sold</th>
+          <th>Revenue</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-event>
+        <tr>
+          <td>{{event.label}}</td>
+          <td>{{event.date | date:'mediumDate'}}</td>
+          <td>{{event.place}}</td>
+          <td>${{event.price | number:'1.2-2'}}</td>
+          <td>{{event.ticketsSold}}</td>
+          <td>${{event.revenue | number:'1.2-2'}}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center p-4">
+            <i class="pi pi-info-circle mr-2"></i>
+            No events found
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div> 
