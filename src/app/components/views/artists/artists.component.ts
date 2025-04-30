@@ -5,8 +5,13 @@ import { ButtonModule } from 'primeng/button';
 import { BaseEntityLayoutComponent } from '../../shared/base-entity-layout/base-entity-layout.component';
 import { ArtistService } from '../../../services/artist.service';
 import { Artist } from '../../../models/artist.model';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 import { ArtistsFormComponent } from '../../forms/artists/artists.component';
 import { DialogModule } from 'primeng/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-artists',
@@ -16,9 +21,12 @@ import { DialogModule } from 'primeng/dialog';
     TableModule, 
     ButtonModule, 
     BaseEntityLayoutComponent,
-    ArtistsFormComponent,
-    DialogModule
+    ConfirmDialogModule,
+    ToastModule,
+    DialogModule,
+    ArtistsFormComponent
   ],
+  providers: [ConfirmationService, MessageService],
   template: `
     <app-base-entity-layout
       title="Artists"
@@ -27,6 +35,12 @@ import { DialogModule } from 'primeng/dialog';
     </app-base-entity-layout>
 
     <ng-template #contentTemplate>
+      <p-toast></p-toast>
+      <p-confirmDialog header="Confirmation" 
+                      icon="pi pi-exclamation-triangle"
+                      acceptLabel="Oui"
+                      rejectLabel="Non"></p-confirmDialog>
+      
       <p-table [value]="artists" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
@@ -112,7 +126,12 @@ export class ArtistsComponent implements OnInit {
   selectedArtist: Artist | null = null;
   displayEditDialog = false;
 
-  constructor(private artistService: ArtistService) {}
+  constructor(
+    private artistService: ArtistService, 
+    private router: Router,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.loadArtists();
@@ -139,9 +158,30 @@ export class ArtistsComponent implements OnInit {
     this.displayEditDialog = true;
   }
 
-  onDelete(artist: Artist) {
-    console.log('Demande de suppression pour:', artist);
-    // TODO: Implémenter la logique de suppression
+  onDelete(artist: Artist): void {
+    this.confirmationService.confirm({
+      message: `Attention l'artiste "${artist.name}" pourrait être lié à des événements qui seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
+      accept: () => {
+        this.artistService.deleteArtist(artist.artistId).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: `L'artiste "${artist.name}" a été supprimé!`
+            });
+            this.loadArtists();
+          },
+          error: (error) => {
+            console.error('Erreur lors de la suppression:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'La suppression a échoué'
+            });
+          }
+        });
+      }
+    });
   }
 
   onSubmit(artistData: Artist) {

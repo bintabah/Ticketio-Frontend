@@ -7,6 +7,10 @@ import { User } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
 import { UsersFormComponent } from '../../forms/users/users.component';
 import { DialogModule } from 'primeng/dialog';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-users',
@@ -17,8 +21,11 @@ import { DialogModule } from 'primeng/dialog';
     ButtonModule,
     BaseEntityLayoutComponent,
     UsersFormComponent,
-    DialogModule
+    DialogModule,
+    ConfirmDialogModule,
+    ToastModule
   ],
+  providers: [ConfirmationService, MessageService],
   template: `
     <app-base-entity-layout
       title="Users"
@@ -27,6 +34,12 @@ import { DialogModule } from 'primeng/dialog';
     </app-base-entity-layout>
 
     <ng-template #contentTemplate>
+      <p-toast></p-toast>
+      <p-confirmDialog header="Confirmation" 
+                      icon="pi pi-exclamation-triangle"
+                      acceptLabel="Oui"
+                      rejectLabel="Non"></p-confirmDialog>
+      
       <p-table [value]="users" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
@@ -82,7 +95,11 @@ export class UsersComponent implements OnInit {
   selectedUser: User | null = null;
   displayEditDialog = false;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
     this.loadUsers();
@@ -110,8 +127,29 @@ export class UsersComponent implements OnInit {
   }
 
   onDelete(user: User) {
-    console.log('Delete user:', user);
-    // Implement delete logic
+    this.confirmationService.confirm({
+      message: `Attention, l'utilisateur "${user.firstName} ${user.name}" pourrait avoir des tickets ; ils seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
+      accept: () => {
+        this.userService.deleteUser(user.userId).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: `L'utilisateur "${user.firstName} ${user.name}" a été supprimé`
+            });
+            this.loadUsers(); // Reload the list after deletion
+          },
+          error: (error) => {
+            console.error('Erreur lors de la suppression:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'La suppression a échoué'
+            });
+          }
+        });
+      }
+    });
   }
 
   onSubmit(userData: User) {
@@ -152,4 +190,4 @@ export class UsersComponent implements OnInit {
   onDialogHide() {
     this.selectedUser = null;
   }
-} 
+}

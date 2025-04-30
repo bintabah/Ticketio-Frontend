@@ -5,6 +5,10 @@ import { ButtonModule } from 'primeng/button';
 import { BaseEntityLayoutComponent } from '../../shared/base-entity-layout/base-entity-layout.component';
 import { Event } from '../../../models/event.model';
 import { EventService } from '../../../services/event.service';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-events',
@@ -13,8 +17,11 @@ import { EventService } from '../../../services/event.service';
     CommonModule,
     TableModule,
     ButtonModule,
-    BaseEntityLayoutComponent
+    BaseEntityLayoutComponent,
+    ConfirmDialogModule,
+    ToastModule
   ],
+  providers: [ConfirmationService, MessageService],
   template: `
     <app-base-entity-layout
       title="Events"
@@ -22,6 +29,12 @@ import { EventService } from '../../../services/event.service';
     </app-base-entity-layout>
 
     <ng-template #contentTemplate>
+      <p-toast></p-toast>
+      <p-confirmDialog header="Confirmation" 
+                      icon="pi pi-exclamation-triangle"
+                      acceptLabel="Oui"
+                      rejectLabel="Non"></p-confirmDialog>
+      
       <p-table [value]="events" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
@@ -108,7 +121,11 @@ export class EventsComponent implements OnInit {
   
   events: Event[] = [];
 
-  constructor(private eventService: EventService) {}
+  constructor(
+    private eventService: EventService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
     this.loadEvents();
@@ -143,7 +160,28 @@ export class EventsComponent implements OnInit {
   }
 
   onDelete(event: Event) {
-    console.log('Delete event:', event);
-    // Implement delete logic
+    this.confirmationService.confirm({
+      message: `L'événement "${event.label}" pourrait avoir des tickets ; ils seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
+      accept: () => {
+        this.eventService.deleteEvent(event.eventId).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Succès',
+              detail: `L'événement "${event.label}" a été supprimé`
+            });
+            this.loadEvents(); // Recharger la liste des événements
+          },
+          error: (error) => {
+            console.error('Erreur lors de la suppression:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erreur',
+              detail: 'La suppression a échoué'
+            });
+          }
+        });
+      }
+    });
   }
-} 
+}
