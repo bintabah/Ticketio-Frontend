@@ -21,13 +21,12 @@ import { MenuItem } from 'primeng/api';
     RouterOutlet,
     TopBarComponent,
     SideBarComponent,
-    MainContentComponent,
     ButtonModule,
     PanelMenuModule,
     DrawerModule,
     TableModule
   ],
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
   title = 'ticketio_front';
