@@ -49,13 +49,13 @@
 
       <div class="form-field">
         <label for="artist">Artiste</label>
-        <p-select id="artist" 
-                  [options]="artists" 
-                  formControlName="artist"
-                  optionLabel="name" 
-                  [filter]="true"
-                  (onChange)="onArtistSelect($event)"
-                  placeholder="Sélectionner un artiste"></p-select>
+        <p-select 
+          [options]="artists"
+          [optionLabel]="'name'"
+          formControlName="artist"
+          (onChange)="onArtistSelect($event)"
+          placeholder="Select Artist">
+        </p-select>
       </div>
     </div>
 

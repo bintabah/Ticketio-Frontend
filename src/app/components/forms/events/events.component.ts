@@ -64,45 +64,41 @@ export class EventsFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.event) {
-      const eventData = {
-        ...this.event,
-        date: typeof this.event.date === 'string' ? new Date(this.event.date) : this.event.date,
-        price: Number(this.event.price),
-        capacity: Number(this.event.capacity),
-        popularity: Number(this.event.popularity)
-      };
-      this.eventForm.patchValue(eventData);
-    }
-    this.loadArtists();
-  }
-
-  private loadArtists() {
-    this.artistService.getAll().subscribe(artists => {
-      this.artists = artists;
-      
-      if (this.event?.artist) {
-        const selectedArtist = this.artists.find(a => a.artistId === this.event?.artist?.artistId);
-        if (selectedArtist) {
-          this.selectedArtist = selectedArtist;
-          this.eventForm.get('artist')?.setValue(selectedArtist);
+    this.loadArtists().then(() => {
+      if (this.event) {
+        const eventData = {
+          ...this.event,
+          date: typeof this.event.date === 'string' ? new Date(this.event.date) : this.event.date,
+          price: Number(this.event.price),
+          capacity: Number(this.event.capacity),
+          popularity: Number(this.event.popularity)
+        };
+        this.eventForm.patchValue(eventData);
+        
+        // Set selected artist if it exists
+        if (this.event.artist) {
+          this.selectedArtist = this.event.artist;
+          const artistControl = this.eventForm.get('artist');
+          if (artistControl) {
+            artistControl.setValue(this.event.artist);
+          }
         }
       }
     });
   }
 
-  onArtistSelect(event: any) {
+  private async loadArtists(): Promise<void> {
+    return new Promise((resolve) => {
+      this.artistService.getAll().subscribe(artists => {
+        this.artists = artists;
+        resolve();
+      });
+    });
+  }
+
+  onArtistSelect(event: { value: Artist }): void {
     if (event.value) {
-      this.selectedArtist = {
-        artistId: event.value.artistId,
-        name: event.value.name,
-        firstName: '',
-        email: '',
-        password: '',
-        contact: '',
-        role: 'ARTIST',
-        genre: event.value.genre
-      } as Artist;
+      this.selectedArtist = event.value;
     } else {
       this.selectedArtist = null;
     }
@@ -137,4 +133,4 @@ export class EventsFormComponent implements OnInit {
   onCancel() {
     this.cancel.emit();
   }
-} 
+}
