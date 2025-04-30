@@ -2,19 +2,28 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { Router, RouterLink } from '@angular/router';
 import { BaseEntityLayoutComponent } from '../../shared/base-entity-layout/base-entity-layout.component';
 import { ArtistService } from '../../../services/artist.service';
 import { Artist } from '../../../models/artist.model';
+import { ArtistsFormComponent } from '../../forms/artists/artists.component';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-artists',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, RouterLink, BaseEntityLayoutComponent],
+  imports: [
+    CommonModule, 
+    TableModule, 
+    ButtonModule, 
+    BaseEntityLayoutComponent,
+    ArtistsFormComponent,
+    DialogModule
+  ],
   template: `
     <app-base-entity-layout
       title="Artists"
-      [contentTemplate]="contentTemplate">
+      [contentTemplate]="contentTemplate"
+      (add)="onCreate()">
     </app-base-entity-layout>
 
     <ng-template #contentTemplate>
@@ -41,6 +50,22 @@ import { Artist } from '../../../models/artist.model';
           </tr>
         </ng-template>
       </p-table>
+
+      <p-dialog 
+        [(visible)]="displayEditDialog" 
+        [style]="{width: '50vw'}" 
+        [modal]="true"
+        [draggable]="false"
+        [resizable]="false"
+        [header]="dialogHeader"
+        (onHide)="onDialogHide()">
+        <app-artists-form
+          *ngIf="displayEditDialog"
+          [artist]="selectedArtist"
+          (submitForm)="onSubmit($event)"
+          (cancel)="onCancel()"
+        ></app-artists-form>
+      </p-dialog>
     </ng-template>
   `,
   styles: [`
@@ -53,31 +78,26 @@ import { Artist } from '../../../models/artist.model';
       text-align: center;
       border: 1px solid transparent;
     }
-
     .status-active {
       background-color: #dcfce7;
       color: #166534;
       border-color: #86efac;
     }
-
     .status-cancelled {
       background-color: #fee2e2;
       color: #991b1b;
       border-color: #fca5a5;
     }
-
     .status-soldout {
       background-color: #fef3c7;
       color: #92400e;
       border-color: #fcd34d;
     }
-
     .status-upcoming {
       background-color: #dbeafe;
       color: #1e40af;
       border-color: #93c5fd;
     }
-
     .status-en-cours {
       background-color: #fff7ed;
       color: #c2410c;
@@ -87,10 +107,12 @@ import { Artist } from '../../../models/artist.model';
 })
 export class ArtistsComponent implements OnInit {
   @ViewChild('contentTemplate') contentTemplate!: TemplateRef<any>;
-
+  
   artists: Artist[] = [];
+  selectedArtist: Artist | null = null;
+  displayEditDialog = false;
 
-  constructor(private artistService: ArtistService, private router: Router) {}
+  constructor(private artistService: ArtistService) {}
 
   ngOnInit(): void {
     this.loadArtists();
@@ -107,12 +129,61 @@ export class ArtistsComponent implements OnInit {
     });
   }
 
-  onEdit(artist: Artist): void {
-    this.router.navigate(['/artists/edit', artist.artistId]);
+  onCreate() {
+    this.selectedArtist = null;
+    this.displayEditDialog = true;
   }
 
-  onDelete(artist: Artist): void {
+  onEdit(artist: Artist) {
+    this.selectedArtist = {...artist};
+    this.displayEditDialog = true;
+  }
+
+  onDelete(artist: Artist) {
     console.log('Demande de suppression pour:', artist);
     // TODO: Implémenter la logique de suppression
+  }
+
+  onSubmit(artistData: Artist) {
+    if (this.selectedArtist) {
+      // Edit mode
+      this.artistService.updateArtist(this.selectedArtist.artistId, artistData).subscribe({
+        next: (updatedArtist) => {
+          const index = this.artists.findIndex(a => a.artistId === updatedArtist.artistId);
+          if (index !== -1) {
+            this.artists[index] = updatedArtist;
+          }
+          this.displayEditDialog = false;
+          this.selectedArtist = null;
+        },
+        error: (error) => {
+          console.error('Error updating artist:', error);
+        }
+      });
+    } else {
+      // Create mode
+      this.artistService.createArtist(artistData).subscribe({
+        next: (newArtist) => {
+          this.artists = [...this.artists, newArtist];
+          this.displayEditDialog = false;
+        },
+        error: (error) => {
+          console.error('Error creating artist:', error);
+        }
+      });
+    }
+  }
+
+  onCancel() {
+    this.displayEditDialog = false;
+    this.selectedArtist = null;
+  }
+
+  onDialogHide() {
+    this.selectedArtist = null;
+  }
+
+  get dialogHeader(): string {
+    return this.selectedArtist ? "Modifier l'artiste" : "Créer un artiste";
   }
 }
