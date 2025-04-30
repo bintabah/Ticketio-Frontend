@@ -34,7 +34,7 @@ export class ArtistService extends BaseEntityService<Artist> {
     return this.delete(id);
   }
   
-  deleteArtist(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
-  }
+  // deleteArtist(id: number): Observable<any> {
+  //   return this.http.delete(`${this.apiUrl}/${id}`);
+  // }
 }

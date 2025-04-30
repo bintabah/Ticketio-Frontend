@@ -11,27 +11,22 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ArtistsFormComponent } from '../../forms/artists/artists.component';
 import { DialogModule } from 'primeng/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-artists',
   standalone: true,
   imports: [
-    
     CommonModule, 
-    
     TableModule, 
-    
     ButtonModule, 
-    
-    
     BaseEntityLayoutComponent,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    DialogModule,
+    ArtistsFormComponent
   ],
-  providers: [ConfirmationService, MessageService,
-    ArtistsFormComponent,
-    DialogModule
-  ],
+  providers: [ConfirmationService, MessageService],
   template: `
     <app-base-entity-layout
       title="Artists"
@@ -165,16 +160,16 @@ export class ArtistsComponent implements OnInit {
 
   onDelete(artist: Artist): void {
     this.confirmationService.confirm({
-      message: `Attention l'artiste "${artist.name}" pourrait être lier à des événements. Êtes-vous sûr de vouloir le supprimer ?`,
+      message: `Attention l'artiste "${artist.name}" pourrait être lié à des événements qui seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
       accept: () => {
         this.artistService.deleteArtist(artist.artistId).subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
               summary: 'Succès',
-              detail: `L'artiste "${artist.name}" a été supprimé`
+              detail: `L'artiste "${artist.name}" a été supprimé!`
             });
-            this.loadArtists(); // Recharger la liste après suppression
+            this.loadArtists();
           },
           error: (error) => {
             console.error('Erreur lors de la suppression:', error);
