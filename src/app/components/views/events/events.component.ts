@@ -106,34 +106,28 @@ import { EventsFormComponent } from '../../forms/events/events.component';
       border: 1px solid transparent;
     }
     
+    .status-draft {
+      background-color: #f3f4f6;
+      color: #4b5563;
+      border-color: #d1d5db;
+    }
+    
     .status-active {
       background-color: #dcfce7;
       color: #166534;
       border-color: #86efac;
     }
     
-    .status-cancelled {
+    .status-closed {
       background-color: #fee2e2;
       color: #991b1b;
       border-color: #fca5a5;
     }
     
-    .status-soldout {
+    .status-cancelled {
       background-color: #fef3c7;
       color: #92400e;
       border-color: #fcd34d;
-    }
-    
-    .status-upcoming {
-      background-color: #dbeafe;
-      color: #1e40af;
-      border-color: #93c5fd;
-    }
-    
-    .status-en-cours {
-      background-color: #fff7ed;
-      color: #c2410c;
-      border-color: #fdba74;
     }
   `]
 })
@@ -168,14 +162,13 @@ export class EventsComponent implements OnInit {
 
   getStatusClass(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'Active': 'status-badge status-active',
-      'Cancelled': 'status-badge status-cancelled',
-      'Soldout': 'status-badge status-soldout',
-      'Upcoming': 'status-badge status-upcoming',
-      'En cours': 'status-badge status-en-cours'
+      'DRAFT': 'status-badge status-draft',
+      'ACTIVE': 'status-badge status-active',
+      'CLOSED': 'status-badge status-closed',
+      'CANCELLED': 'status-badge status-cancelled'
     };
     
-    return statusMap[status] || 'status-badge';
+    return statusMap[status] || 'status-badge status-draft';
   }
 
   onCreate() {

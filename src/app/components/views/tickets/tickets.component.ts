@@ -267,7 +267,10 @@ export class TicketsComponent implements OnInit {
       'Valid': 'success',
       'Used': 'info',
       'Cancelled': 'danger',
-      'En cours': 'warn' 
+      'DRAFT': 'secondary',
+      'ACTIVE': 'success',
+      'CLOSED': 'danger',
+      'CANCELLED': 'warn'
     };
     
     return statusMap[status] || 'info';
