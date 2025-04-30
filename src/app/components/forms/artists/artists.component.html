@@ -1,0 +1,47 @@
+<div class="artist-form-container">
+  <h2>{{ isEditMode ? 'Modifier l\'artiste' : 'Créer un artiste' }}</h2>
+  
+  <form [formGroup]="artistForm" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="name" class="block">Nom</label>
+      <input 
+        type="text" 
+        id="name" 
+        pInputText
+        formControlName="name" 
+        class="w-full"
+        [ngClass]="{'ng-invalid ng-dirty': artistForm.get('name')?.invalid && artistForm.get('name')?.touched}">
+      <small class="p-error" *ngIf="artistForm.get('name')?.invalid && artistForm.get('name')?.touched">
+        Le nom est requis
+      </small>
+    </div>
+
+    <div class="field">
+      <label for="genre" class="block">Genre</label>
+      <input 
+        type="text" 
+        id="genre" 
+        pInputText
+        formControlName="genre" 
+        class="w-full"
+        [ngClass]="{'ng-invalid ng-dirty': artistForm.get('genre')?.invalid && artistForm.get('genre')?.touched}">
+      <small class="p-error" *ngIf="artistForm.get('genre')?.invalid && artistForm.get('genre')?.touched">
+        Le genre est requis
+      </small>
+    </div>
+
+    <div class="flex justify-content-end gap-2 mt-4">
+      <p-button 
+        type="button" 
+        label="Annuler" 
+        styleClass="p-button-secondary" 
+        (click)="onCancel()">
+      </p-button>
+      <p-button 
+        type="submit" 
+        [label]="isEditMode ? 'Modifier' : 'Créer'" 
+        [disabled]="artistForm.invalid">
+      </p-button>
+    </div>
+  </form>
+</div> 
