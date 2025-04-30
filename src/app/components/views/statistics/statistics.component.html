@@ -6,8 +6,8 @@
       <h2>Total Sales</h2>
       <div class="stat-value">
         <span class="currency">$</span>
-        <span class="amount">{{totalSales}}</span>
-        <span class="trend positive">+{{salesGrowth}}%</span>
+        <span class="amount">{{totalSales | number:'1.0-0'}}</span>
+        <span class="trend positive" *ngIf="salesGrowth > 0">+{{salesGrowth}}%</span>
       </div>
     </div>
 

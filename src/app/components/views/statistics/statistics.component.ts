@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ChartModule } from 'primeng/chart';
+import { StatisticsService } from '../../../services/statistics.service';
 
 interface TopEvent {
   name: string;
@@ -27,10 +28,11 @@ export class StatisticsComponent implements OnInit {
   totalEvents: number = 0;
   topEvents: TopEvent[] = [];
 
+  constructor(private statisticsService: StatisticsService) {}
+
   ngOnInit() {
+    this.loadTotalSales();
     // Simulated data - replace with actual API calls
-    this.totalSales = 4560;
-    this.salesGrowth = 12;
     this.totalTickets = 1250;
     this.totalUsers = 845;
     this.totalEvents = 32;
@@ -72,5 +74,19 @@ export class StatisticsComponent implements OnInit {
         revenue: 11000
       }
     ];
+  }
+
+  private loadTotalSales() {
+    this.statisticsService.getTotalSales().subscribe({
+      next: (total) => {
+        this.totalSales = total;
+        // You might want to calculate the growth percentage here as well
+        // based on previous period's data
+      },
+      error: (error) => {
+        console.error('Error loading total sales:', error);
+        // You might want to add error handling here
+      }
+    });
   }
 } 
