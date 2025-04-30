@@ -28,6 +28,23 @@
     color: #ffffff;
 }
 
+.statistics-item {
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.statistics-item::before {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70%;
+    width: 1px;
+    background-color: #4b5563;
+    opacity: 0.3;
+}
+
 .sidebar-item i {
     font-size: 1.125rem;
 }
@@ -35,4 +52,11 @@
 .sidebar-item span {
     font-size: 0.875rem;
     font-weight: 400;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background-color: #2d3a4f;
+    margin: 0.5rem 1rem;
+    opacity: 0.2;
 }
