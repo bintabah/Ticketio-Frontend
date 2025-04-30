@@ -9,6 +9,8 @@ import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { EventsFormComponent } from '../../forms/events/events.component';
 
 @Component({
   selector: 'app-events',
@@ -19,13 +21,16 @@ import { MessageService } from 'primeng/api';
     ButtonModule,
     BaseEntityLayoutComponent,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    DialogModule,
+    EventsFormComponent
   ],
   providers: [ConfirmationService, MessageService],
   template: `
     <app-base-entity-layout
       title="Events"
-      [contentTemplate]="contentTemplate">
+      [contentTemplate]="contentTemplate"
+      (add)="onCreate()">
     </app-base-entity-layout>
 
     <ng-template #contentTemplate>
@@ -72,6 +77,22 @@ import { MessageService } from 'primeng/api';
           </tr>
         </ng-template>
       </p-table>
+
+      <p-dialog 
+        [(visible)]="displayEditDialog" 
+        [style]="{width: '50vw'}" 
+        [modal]="true"
+        [draggable]="false"
+        [resizable]="false"
+        [header]="dialogHeader"
+        (onHide)="onDialogHide()">
+        <app-events-form
+          *ngIf="displayEditDialog"
+          [event]="selectedEvent"
+          (submitForm)="onSubmit($event)"
+          (cancel)="onCancel()"
+        ></app-events-form>
+      </p-dialog>
     </ng-template>
   `,
   styles: [`
@@ -120,6 +141,9 @@ export class EventsComponent implements OnInit {
   @ViewChild('contentTemplate') contentTemplate!: TemplateRef<any>;
   
   events: Event[] = [];
+  displayEditDialog = false;
+  selectedEvent: Event | undefined;
+  dialogHeader = '';
 
   constructor(
     private eventService: EventService,
@@ -127,7 +151,7 @@ export class EventsComponent implements OnInit {
     private messageService: MessageService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadEvents();
   }
 
@@ -154,14 +178,73 @@ export class EventsComponent implements OnInit {
     return statusMap[status] || 'status-badge';
   }
 
+  onCreate() {
+    this.selectedEvent = undefined;
+    this.dialogHeader = 'Créer un événement';
+    this.displayEditDialog = true;
+  }
+
   onEdit(event: Event) {
-    console.log('Edit event:', event);
-    // Implement edit logic
+    this.selectedEvent = { ...event };
+    this.dialogHeader = 'Modifier l\'événement';
+    this.displayEditDialog = true;
+  }
+
+  onSubmit(event: Event) {
+    if (event.eventId) {
+      this.eventService.update(event.eventId, event).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: `L'événement "${event.label}" a été modifié`
+          });
+          this.loadEvents();
+          this.displayEditDialog = false;
+        },
+        error: (error) => {
+          console.error('Error updating event:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'La modification a échoué'
+          });
+        }
+      });
+    } else {
+      this.eventService.create(event).subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: `L'événement "${event.label}" a été créé`
+          });
+          this.loadEvents();
+          this.displayEditDialog = false;
+        },
+        error: (error) => {
+          console.error('Error creating event:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: 'La création a échoué'
+          });
+        }
+      });
+    }
+  }
+
+  onCancel() {
+    this.displayEditDialog = false;
+  }
+
+  onDialogHide() {
+    this.selectedEvent = undefined;
   }
 
   onDelete(event: Event) {
     this.confirmationService.confirm({
-      message: `L'événement "${event.label}" pourrait avoir des tickets ; ils seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
+      message: `L'événement <strong>${event.label}</strong> pourrait avoir des tickets. <br> Ils seront également supprimés. <br> <br> Êtes-vous sûr de vouloir le supprimer ?`,
       accept: () => {
         this.eventService.deleteEvent(event.eventId).subscribe({
           next: () => {
@@ -170,7 +253,7 @@ export class EventsComponent implements OnInit {
               summary: 'Succès',
               detail: `L'événement "${event.label}" a été supprimé`
             });
-            this.loadEvents(); // Recharger la liste des événements
+            this.loadEvents();
           },
           error: (error) => {
             console.error('Erreur lors de la suppression:', error);

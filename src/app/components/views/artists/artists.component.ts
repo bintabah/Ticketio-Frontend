@@ -160,7 +160,7 @@ export class ArtistsComponent implements OnInit {
 
   onDelete(artist: Artist): void {
     this.confirmationService.confirm({
-      message: `Attention l'artiste "${artist.name}" pourrait être lié à des événements qui seront également supprimés. Êtes-vous sûr de vouloir le supprimer ?`,
+      message: `Attention l'artiste <strong>${artist.name}</strong> pourrait être lié à des événements. <br> Ils seront également supprimés. <br> <br> Êtes-vous sûr de vouloir le supprimer ?`,
       accept: () => {
         this.artistService.deleteArtist(artist.artistId).subscribe({
           next: () => {
