@@ -31,9 +31,8 @@ export class StatisticsComponent implements OnInit {
   constructor(private statisticsService: StatisticsService) {}
 
   ngOnInit() {
-    this.loadTotalSales();
+    this.loadStatistics();
     // Simulated data - replace with actual API calls
-    this.totalTickets = 1250;
     this.totalUsers = 845;
     this.totalEvents = 32;
     
@@ -76,16 +75,31 @@ export class StatisticsComponent implements OnInit {
     ];
   }
 
-  private loadTotalSales() {
+  private loadStatistics() {
     this.statisticsService.getTotalSales().subscribe({
       next: (total) => {
         this.totalSales = total;
-        // You might want to calculate the growth percentage here as well
-        // based on previous period's data
       },
       error: (error) => {
         console.error('Error loading total sales:', error);
-        // You might want to add error handling here
+      }
+    });
+
+    this.statisticsService.getTotalTickets().subscribe({
+      next: (total) => {
+        this.totalTickets = total;
+      },
+      error: (error) => {
+        console.error('Error loading total tickets:', error);
+      }
+    });
+
+    this.statisticsService.getTotalUsers().subscribe({
+      next: (total) => {
+        this.totalUsers = total;
+      },
+      error: (error) => {
+        console.error('Error loading total users:', error);
       }
     });
   }

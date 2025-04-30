@@ -51,4 +51,18 @@ export class StatisticsService {
       })
     );
   }
+
+  getTotalTickets(): Observable<number> {
+    return this.http.get<any[]>(`${this.apiUrl}/tickets`).pipe(
+      map(tickets => tickets.length),
+      tap(total => console.log('Total tickets:', total))
+    );
+  }
+
+  getTotalUsers(): Observable<number> {
+    return this.http.get<any[]>(`${this.apiUrl}/users`).pipe(
+      map(users => users.length),
+      tap(total => console.log('Total users:', total))
+    );
+  }
 } 
