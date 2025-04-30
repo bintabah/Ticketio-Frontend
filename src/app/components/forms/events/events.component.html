@@ -9,13 +9,13 @@
 
     <div class="form-field">
       <label for="description">Description</label>
-      <textarea id="description" pInputTextarea formControlName="description" rows="4"></textarea>
+      <textarea id="description" pTextarea formControlName="description" rows="4"></textarea>
     </div>
 
     <div class="form-row">
       <div class="form-field">
         <label for="date">Date</label>
-        <p-calendar id="date" formControlName="date" [showTime]="true" dateFormat="dd/mm/yy"></p-calendar>
+        <p-datePicker id="date" formControlName="date" [showTime]="true" dateFormat="dd/mm/yy"></p-datePicker>
       </div>
 
       <div class="form-field">
@@ -40,16 +40,21 @@
       <div class="form-field">
         <label for="popularity">Popularité</label>
         <input id="popularity" type="number" pInputText formControlName="popularity" />
+        <small class="p-error" *ngIf="eventForm.get('popularity')?.invalid && eventForm.get('popularity')?.touched">
+          <span *ngIf="eventForm.get('popularity')?.errors?.['required']">La popularité est requise</span>
+          <span *ngIf="eventForm.get('popularity')?.errors?.['min']">La popularité doit être positive</span>
+          <span *ngIf="eventForm.get('popularity')?.errors?.['max']">La popularité ne peut pas dépasser 5</span>
+        </small>
       </div>
 
       <div class="form-field">
         <label for="artist">Artiste</label>
         <p-select id="artist" 
                   [options]="artists" 
-                  [(ngModel)]="selectedArtist"
-                  [ngModelOptions]="{standalone: true}"
+                  formControlName="artist"
                   optionLabel="name" 
                   [filter]="true"
+                  (onChange)="onArtistSelect($event)"
                   placeholder="Sélectionner un artiste"></p-select>
       </div>
     </div>

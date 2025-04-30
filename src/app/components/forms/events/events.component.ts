@@ -4,10 +4,10 @@ import { CommonModule } from '@angular/common';
 import { Event } from '../../../models/event.model';
 import { Artist } from '../../../models/artist.model';
 import { ArtistService } from '../../../services/artist.service';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextarea } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
@@ -19,10 +19,10 @@ import { ButtonModule } from 'primeng/button';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    CalendarModule,
+    DatePickerModule,
     SelectModule,
     InputTextModule,
-    InputTextarea,
+    TextareaModule,
     ButtonModule
   ]
 })
@@ -58,7 +58,8 @@ export class EventsFormComponent implements OnInit {
       price: [0, [Validators.required, Validators.min(0)]],
       capacity: [0, [Validators.required, Validators.min(1)]],
       status: ['ACTIVE', Validators.required],
-      popularity: [0, [Validators.required, Validators.min(0)]]
+      popularity: [0, [Validators.required, Validators.min(0), Validators.max(5)]],
+      artist: [null]
     });
   }
 
@@ -66,14 +67,12 @@ export class EventsFormComponent implements OnInit {
     if (this.event) {
       const eventData = {
         ...this.event,
-        date: this.event.date instanceof Date ? this.event.date : new Date(this.event.date),
+        date: typeof this.event.date === 'string' ? new Date(this.event.date) : this.event.date,
         price: Number(this.event.price),
         capacity: Number(this.event.capacity),
-        popularity: Number(this.event.popularity),
-        artist: this.event.artist?.artistId
+        popularity: Number(this.event.popularity)
       };
       this.eventForm.patchValue(eventData);
-      this.selectedArtist = this.event.artist;
     }
     this.loadArtists();
   }
@@ -81,14 +80,32 @@ export class EventsFormComponent implements OnInit {
   private loadArtists() {
     this.artistService.getAll().subscribe(artists => {
       this.artists = artists;
+      
       if (this.event?.artist) {
-        const existingArtist = this.artists.find(a => a.artistId === this.event?.artist?.artistId);
-        if (!existingArtist) {
-          this.artists = [...this.artists, this.event.artist];
+        const selectedArtist = this.artists.find(a => a.artistId === this.event?.artist?.artistId);
+        if (selectedArtist) {
+          this.selectedArtist = selectedArtist;
+          this.eventForm.get('artist')?.setValue(selectedArtist);
         }
-        this.selectedArtist = existingArtist || this.event.artist;
       }
     });
+  }
+
+  onArtistSelect(event: any) {
+    if (event.value) {
+      this.selectedArtist = {
+        artistId: event.value.artistId,
+        name: event.value.name,
+        firstName: '',
+        email: '',
+        password: '',
+        contact: '',
+        role: 'ARTIST',
+        genre: event.value.genre
+      } as Artist;
+    } else {
+      this.selectedArtist = null;
+    }
   }
 
   onSubmit() {
@@ -96,14 +113,22 @@ export class EventsFormComponent implements OnInit {
       const formValue = this.eventForm.value;
       
       const eventData: Event = {
-        ...formValue,
-        eventId: this.event?.eventId || null,
+        label: formValue.label,
+        description: formValue.description,
+        date: formValue.date instanceof Date ? formValue.date.toISOString() : formValue.date,
+        place: formValue.place,
         price: Number(formValue.price),
         capacity: Number(formValue.capacity),
+        status: formValue.status,
         popularity: Number(formValue.popularity),
-        date: formValue.date instanceof Date ? formValue.date.toISOString() : formValue.date,
-        artist: this.artists.find(a => a.artistId === formValue.artist) || null
+        artist: this.selectedArtist ? {
+          artistId: this.selectedArtist.artistId
+        } as Artist : null
       };
+
+      if (this.event?.eventId) {
+        eventData.eventId = this.event.eventId;
+      }
 
       this.submitForm.emit(eventData);
     }

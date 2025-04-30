@@ -186,7 +186,7 @@ export class EventsComponent implements OnInit {
   onSubmit(event: Event) {
     if (event.eventId) {
       this.eventService.update(event.eventId, event).subscribe({
-        next: () => {
+        next: (response) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Succès',
@@ -205,8 +205,9 @@ export class EventsComponent implements OnInit {
         }
       });
     } else {
+      console.log('Event data being sent to server:', event);
       this.eventService.create(event).subscribe({
-        next: () => {
+        next: (response) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Succès',
@@ -239,7 +240,7 @@ export class EventsComponent implements OnInit {
     this.confirmationService.confirm({
       message: `L'événement <strong>${event.label}</strong> pourrait avoir des tickets. <br> Ils seront également supprimés. <br> <br> Êtes-vous sûr de vouloir le supprimer ?`,
       accept: () => {
-        this.eventService.deleteEvent(event.eventId).subscribe({
+        this.eventService.deleteEvent(event.eventId!).subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
