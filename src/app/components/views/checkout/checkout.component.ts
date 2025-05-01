@@ -86,17 +86,28 @@ export class CheckoutComponent implements OnInit {
     this.isProcessing = true;
     
     try {
+      console.log('Starting payment process for event:', this.event.eventId);
       await this.stripeService.createPaymentSession(
         this.event.eventId,
         this.customerInfo
       );
-      // Note: No need to handle success here as Stripe will redirect to its checkout page
-    } catch (error) {
-      console.error('Payment failed:', error);
+    } catch (error: any) {
+      console.error('Payment process error:', error);
+      let errorMessage = 'Unable to process payment. Please try again.';
+      
+      if (error.status === 404) {
+        errorMessage = 'Payment endpoint not found. Please check the server configuration.';
+      } else if (error.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       this.messageService.add({
         severity: 'error',
         summary: 'Payment Failed',
-        detail: 'Unable to process payment. Please try again.'
+        detail: errorMessage,
+        life: 5000
       });
       this.isProcessing = false;
     }

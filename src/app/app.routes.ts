@@ -10,12 +10,14 @@ import { StatisticsComponent } from './components/views/statistics/statistics.co
 import { EventsFormComponent } from './components/forms/events/events.component';
 import { PublicHomeComponent } from './components/views/public-home/public-home.component';
 import { CheckoutComponent } from './components/views/checkout/checkout.component';
+import { SuccessComponent } from './components/views/success/success.component';
 
 export const routes: Routes = [
   { path: '', component: PublicHomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'checkout/:id', component: CheckoutComponent },
+  { path: 'success', component: SuccessComponent },
 
   { 
     path: 'admin',

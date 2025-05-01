@@ -14,4 +14,5 @@ export interface Event {
   artist?: Artist;
   tickets?: Ticket[];
   imageUrl?: string;
-} 
+  vipCode: string; // Stripe price ID for payment processing
+}

@@ -3,10 +3,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { firstValueFrom } from 'rxjs';
-
-interface CreateCheckoutSessionResponse {
-  sessionId: string;
-}
+import { Event } from '../models/event.model';
+import { EventService } from './event.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,38 +12,47 @@ interface CreateCheckoutSessionResponse {
 export class StripeService {
   private stripePromise = loadStripe(environment.stripePublicKey);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private eventService: EventService) {}
 
-  async createPaymentSession(eventId: number, customerInfo: any) {
+  async createPaymentSession(eventId: number, customerInfo: any): Promise<any> {
+    console.log('Creating payment session for event:', eventId, 'with customer info:', customerInfo);
+    
     try {
-      const stripe = await this.stripePromise;
+      const event = await firstValueFrom(this.eventService.getEvent(eventId));
+      if (!event) {
+        throw new Error('Event not found');
+      }
+      
+      const stripe = await this.loadStripe();
       if (!stripe) {
         throw new Error('Stripe failed to load');
       }
 
-      // Create a checkout session on your backend
-      const response = await firstValueFrom(
-        this.http.post<CreateCheckoutSessionResponse>(
-          `${environment.apiUrl}/payments/create-checkout-session`,
-          {
-            eventId,
-            customerInfo
-          }
-        )
-      );
-
-      const result = await stripe.redirectToCheckout({
-        sessionId: response.sessionId
+      const { error } = await stripe.redirectToCheckout({
+        lineItems: [{
+          price: 'price_1LBoFRGOeuivamSHGciHFnHZ',
+          quantity: 1
+        }],
+        mode: 'payment',
+        successUrl: `${window.location.origin}/success?eventId=${eventId}`,
+        cancelUrl: `${window.location.origin}/checkout?eventId=${eventId}`,
+        customerEmail: customerInfo.email
       });
 
-      if (result.error) {
-        throw new Error(result.error.message);
+      if (error) {
+        throw error;
       }
-
-      return { success: true };
     } catch (error) {
-      console.error('Error creating payment session:', error);
+      console.error('Detailed payment session error:', error);
       throw error;
     }
   }
-} 
+
+  private async loadStripe() {
+    const stripe = await this.stripePromise;
+    if (!stripe) {
+      throw new Error('Stripe failed to load');
+    }
+    return stripe;
+  }
+}
