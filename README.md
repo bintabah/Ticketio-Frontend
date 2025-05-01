@@ -86,6 +86,11 @@ During the development process, we mainly encountered configuration-related and 
   - The frontend sometimes failed to serve properly due to incorrect port forwarding or host binding.  
   - ✅ **Solution:** Verified and fixed Docker Compose configurations and made sure the development server binds to `0.0.0.0`.
 
+- **Payment System Integration (Stripe):**  
+  - Stripe Checkout has been integrated for online ticket purchases.   
+  - Payments are linked to specific ticket data and stored via backend API after confirmation.
+
+
 ---
 
 ## **3. How to Start the Project 🚀**
