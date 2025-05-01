@@ -6,18 +6,27 @@
 - [x] Project initialization  
 - [x] Environment setup with Docker  
 - [x] Angular application structure  
-- [x] UI component development  
-- [x] REST API integration  
-- [x] Testing and validation  
-- [ ] Deployment  
+- [x] UI Admin component development
+- [x] UI Landing Page component development  
+- [x] Backend connection  
+- [x] Testing and validation
+- [x] Interactice search
+- [x] Payment Processor  
 
 📢 **Progress Details** :  
-> The frontend of the Ticketio project has been developed using **Angular 19.2.5**, following a component-based architecture, and fully dockerized to ensure consistent environments across the team. The application interfaces with the backend REST API, and includes authentication, role-based route protection, and dynamic UI elements built with PrimeNG.  
+> The frontend of the Ticketio project has been developed using **Angular 19.2.5**, following a component-based architecture, and fully dockerized. 
+
+> The application interfaces with the backend REST API, and includes authentication, role-based route protection, and dynamic UI elements built with PrimeNG.
+
 > When the project is launched, the user is redirected to the **landing page** at `http://localhost:4200/`, which displays a **list of concerts** open to the public.  
+
 > This public homepage includes a **search bar** allowing users to filter concerts by **location**, **title**, or **date**.  
-> To access management interfaces, users must click on **"Connexion / Inscription"** in the navigation bar and authenticate.  
+
+> To access management interfaces, users must click on **"Connexion"** in the navigation bar and authenticate.  
+
 > If the database was populated using `JpaTest`, then the default admin credentials are:  
-> 📧 **admin@admin.com** / 🔒 **admin**  
+📧 **admin@admin.com** / 🔒 **admin**  
+
 > Only authenticated users with the role `admin` can access protected `/admin/*` routes.  
 > ***Updated : 30/04/2025 (11:59PM)***
 
@@ -66,7 +75,7 @@
 
 ---
 
-### 💡 **Challenges and Possible Solutions**
+### 💡 **Challenges and Solutions**
 
 During the development process, we mainly encountered configuration-related and integration issues. The key challenges were:
 
@@ -129,7 +138,7 @@ Open the project in your VSCode
 # Reopen the project in the container
 - Press `Ctrl + Shift + P`
 - Type "Rebuild and Open in Container"
-- Confirm prompts (press Y + Enter when asked)
+- Confirm prompts (press Y + Enter if asked)
 - Wait for dependencies (package.json) to be installed
 # You can now develop directly inside the container
 ```
@@ -197,16 +206,15 @@ Wait for the Angular CLI to build and expose the app at:
 
 ## **4. Next Steps**
 
-📝 **Upcoming Tasks** :
-- Final UI polish & styling  
-- Testing accessibility & edge cases  
-- Complete documentation and optional deployment guide
+📝 **Utilities** :
+- A card number to test the buying of a ticket is : 4242 4242 4242 4242
+- any future date, any CVC, any name.
 
 ---
 
 📌 **Additional Information**
 
 👥 **Team Members** : [AGBAHOLOU Romaric Armel](https://gitlab2.istic.univ-rennes1.fr/ragbaholou), [BAH Hadja Sory Binta](https://gitlab2.istic.univ-rennes1.fr/hbah)  
-👨‍🏫 **Project Supervisor** : [Aymeric Blot](https://gitlab2.istic.univ-rennes1.fr/ayblot)  
+👨‍🏫 **Project Supervisor** : [Chiara Relevat](https://gitlab2.istic.univ-rennes1.fr/crelevat)  
 📂 **Frontend Repository** : https://gitlab2.istic.univ-rennes1.fr/ragbaholou/ticketio_front  
 📂 **Backend Repository** : https://gitlab2.istic.univ-rennes1.fr/ragbaholou/ticketio_back
