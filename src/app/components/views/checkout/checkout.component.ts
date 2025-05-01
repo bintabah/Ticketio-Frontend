@@ -7,6 +7,7 @@ import { EventService } from '../../../services/event.service';
 import { StripeService } from '../../../services/stripe.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { AuthService, User } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-checkout',
@@ -24,6 +25,7 @@ export class CheckoutComponent implements OnInit {
     email: ''
   };
   isProcessing = false;
+  currentUser: User | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,10 +33,24 @@ export class CheckoutComponent implements OnInit {
     private eventService: EventService,
     private stripeService: StripeService,
     private location: Location,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    // Get current user info
+    this.authService.currentUser.subscribe(user => {
+      if (user) {
+        this.currentUser = user;
+        // Pre-fill the form with user info
+        this.customerInfo = {
+          firstName: user.firstName || '',
+          lastName: user.name || '',
+          email: user.email || ''
+        };
+      }
+    });
+
     const eventId = this.route.snapshot.paramMap.get('id');
     if (eventId) {
       this.eventService.getEvent(Number(eventId)).subscribe({
