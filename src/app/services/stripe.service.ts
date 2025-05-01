@@ -36,7 +36,8 @@ export class StripeService {
         mode: 'payment',
         successUrl: `${window.location.origin}/success?eventId=${eventId}`,
         cancelUrl: `${window.location.origin}/checkout?eventId=${eventId}`,
-        customerEmail: customerInfo.email
+        customerEmail: customerInfo.email,
+        clientReferenceId: eventId.toString()
       });
 
       if (error) {

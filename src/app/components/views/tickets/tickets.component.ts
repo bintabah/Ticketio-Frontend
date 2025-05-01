@@ -101,7 +101,7 @@ interface TicketGroup {
                   </td>
                   <td>
                     <div class="flex items-center">
-                      <span class="font-medium">{{ ticket.noPlace }}</span>
+                      <span class="font-medium">{{ ticket.noplace }}</span>
                     </div>
                   </td>
                   <td>
@@ -283,24 +283,26 @@ export class TicketsComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        this.ticketService.deleteTicket(ticket.ticketId).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Succès',
-              detail: `Le ticket "<strong>"${ticket.noPlace} - ${ticket.code}"</strong>" a été supprimé`
-            });
-            this.loadTickets();
-          },
-          error: (error) => {
-            console.error('Erreur lors de la suppression du ticket:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erreur',
-              detail: 'La suppression a échoué'
-            });
-          }
-        });
+        if (ticket.ticketId) {
+          this.ticketService.deleteTicket(ticket.ticketId).subscribe({
+            next: () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Succès',
+                detail: `Le ticket "<strong>"${ticket.noPlace} - ${ticket.code}"</strong>" a été supprimé`
+              });
+              this.loadTickets();
+            },
+            error: (error) => {
+              console.error('Erreur lors de la suppression du ticket:', error);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Erreur',
+                detail: 'La suppression a échoué'
+              });
+            }
+          });
+        }
       }
     });
   }

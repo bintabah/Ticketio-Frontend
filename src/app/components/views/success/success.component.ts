@@ -25,8 +25,10 @@ export class SuccessComponent implements OnInit {
   ngOnInit() {
     const eventId = this.route.snapshot.queryParamMap.get('eventId');
     if (eventId) {
+      console.log('Creating ticket for event:', eventId);
       this.createTicket(Number(eventId));
     } else {
+      console.error('No event ID provided in URL');
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
@@ -37,8 +39,8 @@ export class SuccessComponent implements OnInit {
   }
 
   private createTicket(eventId: number) {
+    console.log('Generating ticket data for event:', eventId);
     const ticket: Ticket = {
-      ticketId: 0, // Will be set by the backend
       noPlace: this.generateSeatNumber(),
       code: this.generateTicketCode(),
       status: 'ACTIVE',
@@ -47,8 +49,10 @@ export class SuccessComponent implements OnInit {
       userId: 1 // You might want to get this from the current user
     };
 
+    console.log('Sending ticket creation request:', ticket);
     this.ticketService.createTicket(ticket).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('Ticket created successfully:', response);
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
@@ -60,14 +64,27 @@ export class SuccessComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error creating ticket:', error);
+        let errorMessage = 'Failed to create ticket. Please contact support.';
+        
+        if (error.status === 404) {
+          errorMessage = 'Event not found. Please contact support.';
+        } else if (error.status === 400) {
+          errorMessage = 'Invalid ticket data. Please contact support.';
+        } else if (error.status === 500) {
+          errorMessage = 'Server error. Please try again later or contact support.';
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to create ticket. Please contact support.'
+          detail: errorMessage,
+          life: 5000
         });
         setTimeout(() => {
           this.router.navigate(['/']);
-        }, 3000);
+        }, 5000);
       }
     });
   }
