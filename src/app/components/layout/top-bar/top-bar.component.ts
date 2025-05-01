@@ -10,6 +10,7 @@ import { AuthService, User } from '../../../services/auth.service';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-top-bar',
@@ -22,7 +23,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     MenuModule,
     FormsModule,
     TooltipModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    RouterModule
   ],
   providers: [ConfirmationService],
   templateUrl: './top-bar.component.html',

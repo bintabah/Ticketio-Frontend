@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { EventService } from '../../../services/event.service';
 import { TicketService } from '../../../services/ticket.service';
 import { CartService } from '../../../services/cart.service';
@@ -53,7 +53,8 @@ export class PublicHomeComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private ticketService: TicketService,
-    private cartService: CartService
+    private cartService: CartService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -134,6 +135,6 @@ export class PublicHomeComponent implements OnInit {
   }
 
   addToCart(event: Event) {
-    this.cartService.addToCart(event);
+    this.router.navigate(['/checkout', event.eventId]);
   }
 } 

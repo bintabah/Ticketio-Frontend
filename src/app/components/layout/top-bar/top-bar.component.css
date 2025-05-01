@@ -12,6 +12,38 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
 }
 
+.logo-section {
+    display: flex;
+    align-items: center;
+}
+
+.logo-section .home-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: #1e293b;
+    transition: color 0.2s ease;
+    cursor: pointer;
+}
+
+.logo-section .home-link:hover {
+    color: #3b82f6;
+}
+
+.logo-section .logo-img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.logo-section h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    user-select: none;
+}
+
 .top-bar h1 {
     font-size: 1.25rem;
     font-weight: 600;
