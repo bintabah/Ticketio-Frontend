@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { Ticket } from '../../../models/ticket.model';
 import { User } from '../../../models/user.model';
 import { Event } from '../../../models/event.model';
+import { PdfService } from '../../../services/pdf.service';
 
 @Component({
   selector: 'app-success',
@@ -25,7 +26,8 @@ export class SuccessComponent implements OnInit {
     private ticketService: TicketService,
     private userService: UserService,
     private eventService: EventService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private pdfService: PdfService
   ) {}
 
   ngOnInit() {
@@ -63,14 +65,14 @@ export class SuccessComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'No users found in database'
+                detail: 'No users found'
               });
               this.router.navigate(['/']);
               return;
             }
 
+            // Get random user for ticket assignment
             const randomUser = users[Math.floor(Math.random() * users.length)];
-            console.log('Selected user:', randomUser);
 
             this.ticketService.getTicketsByEvent(eventId).subscribe({
               next: (tickets) => {
@@ -98,6 +100,15 @@ export class SuccessComponent implements OnInit {
                 this.ticketService.createTicket(ticket).subscribe({
                   next: (response) => {
                     console.log('Ticket created successfully:', response);
+                    
+                    // Generate and download PDF invoice
+                    const customerInfo = {
+                      firstName: randomUser.firstName,
+                      lastName: randomUser.name,
+                      email: randomUser.email
+                    };
+                    this.pdfService.generateInvoice(ticket, event, customerInfo);
+
                     this.messageService.add({
                       severity: 'success',
                       summary: 'Success',
@@ -146,7 +157,7 @@ export class SuccessComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Failed to load users from database'
+              detail: 'Failed to load users'
             });
             this.router.navigate(['/']);
           }
