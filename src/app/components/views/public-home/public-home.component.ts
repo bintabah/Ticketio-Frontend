@@ -9,19 +9,41 @@ import { Event } from '../../../models/event.model';
 import { Ticket } from '../../../models/ticket.model';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { trigger, state, style, animate, transition, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-public-home',
   templateUrl: './public-home.component.html',
   styleUrls: ['./public-home.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink]
+  imports: [CommonModule, FormsModule, RouterLink],
+  animations: [
+    trigger('signatureAnimation', [
+      state('typing', style({
+        width: '0',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
+      })),
+      state('typed', style({
+        width: '100%',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
+      })),
+      transition('typing => typed', [
+        animate('2s steps(40, end)')
+      ]),
+      transition('typed => typing', [
+        animate('0.5s')
+      ])
+    ])
+  ]
 })
 export class PublicHomeComponent implements OnInit {
   searchQuery: string = '';
   popularEvents: Event[] = [];
   filteredEvents: Event[] = [];
   cartCount: number = 0;
+  signatureState: string = 'typing';
   private readonly thumbnailCount = 5;
   private readonly imageWidth = 400;
   private readonly imageHeight = 300;
@@ -39,6 +61,13 @@ export class PublicHomeComponent implements OnInit {
     this.cartService.cartItems$.subscribe(items => {
       this.cartCount = items.length;
     });
+    this.startSignatureAnimation();
+  }
+
+  startSignatureAnimation() {
+    setInterval(() => {
+      this.signatureState = this.signatureState === 'typing' ? 'typed' : 'typing';
+    }, 2000);
   }
 
   loadEventsAndTickets() {
