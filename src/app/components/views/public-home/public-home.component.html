@@ -7,7 +7,7 @@
     </div>
     <nav class="nav-menu">
       <a href="#" class="nav-link">Accueil</a>
-      <a href="#" class="nav-link">Événements</a>
+      <a href="#" class="nav-link">Contact</a>
       <a routerLink="/admin" class="nav-link">Connexion / Inscription</a>
       <a href="#" class="cart-icon">
         <i class="pi pi-shopping-cart"></i>
@@ -33,7 +33,7 @@
 
   <!-- Popular Concerts Section -->
   <section class="popular-concerts">
-    <h2>Concerts populaires</h2>
+    <h2>Concerts à venir !</h2>
     <div class="concert-grid">
       <div class="concert-card" *ngFor="let event of popularEvents">
         <div class="concert-image" [ngStyle]="{'background-image': 'url(' + event.imageUrl + ')'}"></div>
@@ -42,9 +42,7 @@
           <p>{{ formatDate(event.date) }} • {{ event.place }}</p>
           <div class="price-tickets-container">
             <p class="price">{{ event.price }}€</p>
-            <p class="remaining-tickets" 
-               [class.low]="calculateRemainingTickets(event) <= event.capacity * 0.2"
-               [class.critical]="calculateRemainingTickets(event) <= event.capacity * 0.1">
+            <p class="remaining-tickets">
               <i class="pi pi-ticket"></i>
               {{ calculateRemainingTickets(event) }} places restantes
             </p>

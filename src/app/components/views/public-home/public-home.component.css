@@ -114,27 +114,33 @@
   margin-bottom: 2rem;
 }
 
+/* Container for all cards */
 .concert-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
+/* Individual card styling */
 .concert-card {
+  display: flex;
+  flex-direction: column;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background: white;
+  height: 100%;  /* Make cards fill full height */
 }
 
 .concert-image {
   width: 100%;
-  height: 200px;
+  aspect-ratio: 16/9;  /* Maintain consistent image ratio */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  display: block;
 }
 
 .placeholder-image {
@@ -150,25 +156,33 @@
 }
 
 .concert-info {
-  padding: 1.5rem;
+  padding: 16px;
+  flex-grow: 1;  /* Allow info section to fill remaining space */
+  display: flex;
+  flex-direction: column;
 }
 
+/* Title styling */
 .concert-info h3 {
+  margin: 0 0 8px 0;
   font-size: 1.25rem;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
+/* Location and date styling */
 .concert-info p {
-  color: #64748b;
-  margin-bottom: 0.5rem;
+  margin: 0 0 8px 0;
+  color: #666;
 }
 
+/* Price and tickets container */
 .price-tickets-container {
+  margin-top: auto;  /* Push to bottom of card */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
 }
 
 .price {
@@ -182,13 +196,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #4f46e5;
   font-size: 0.875rem;
   margin: 0;
-}
-
-.remaining-tickets i {
-  font-size: 1rem;
 }
 
 /* Add a warning color when tickets are running low */
@@ -277,4 +286,19 @@
   padding-top: 2rem;
   border-top: 1px solid #334155;
   color: #94a3b8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .concert-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    padding: 16px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .concert-grid {
+    grid-template-columns: 1fr;  /* Single column on very small screens */
+  }
 } 

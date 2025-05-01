@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { EventService } from '../../../services/event.service';
+import { TicketService } from '../../../services/ticket.service';
 import { Event } from '../../../models/event.model';
+import { Ticket } from '../../../models/ticket.model';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-public-home',
@@ -18,17 +22,26 @@ export class PublicHomeComponent implements OnInit {
   private readonly thumbnailCount = 5;
   private readonly imageWidth = 400;
   private readonly imageHeight = 300;
+  private tickets: Ticket[] = [];
 
-  constructor(private eventService: EventService) {}
+  constructor(
+    private eventService: EventService,
+    private ticketService: TicketService
+  ) {}
 
   ngOnInit() {
-    this.loadPopularEvents();
+    this.loadEventsAndTickets();
   }
 
-  loadPopularEvents() {
-    this.eventService.getEvents().subscribe({
-      next: (events: Event[]) => {
-        this.popularEvents = events
+  loadEventsAndTickets() {
+    // Use forkJoin to fetch both events and tickets in parallel
+    forkJoin({
+      events: this.eventService.getEvents(),
+      tickets: this.ticketService.getTickets()
+    }).subscribe({
+      next: (result) => {
+        this.tickets = result.tickets;
+        this.popularEvents = result.events
           .sort((a, b) => b.popularity - a.popularity)
           .slice(0, 6)
           .map(event => ({
@@ -37,9 +50,14 @@ export class PublicHomeComponent implements OnInit {
           }));
       },
       error: (error: Error) => {
-        console.error('Error loading popular events:', error);
+        console.error('Error loading data:', error);
       }
     });
+  }
+
+  calculateRemainingTickets(event: Event): number {
+    const soldTickets = this.tickets.filter(ticket => ticket.eventId === event.eventId).length;
+    return event.capacity - soldTickets;
   }
 
   private getRandomConcertImage(): string {
@@ -58,10 +76,5 @@ export class PublicHomeComponent implements OnInit {
       month: 'long',
       year: 'numeric'
     });
-  }
-
-  calculateRemainingTickets(event: Event): number {
-    const soldTickets = event.tickets?.length || 0;
-    return event.capacity - soldTickets;
   }
 } 
