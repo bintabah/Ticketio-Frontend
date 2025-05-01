@@ -116,6 +116,7 @@ export class EventsFormComponent implements OnInit {
         capacity: Number(this.eventForm.get('capacity')?.value),
         status: this.eventForm.get('status')?.value,
         popularity: Number(this.eventForm.get('popularity')?.value),
+        vipCode: 'price_1LBoFRGOeuivamSHGciHFnHZ',
         artist: this.selectedArtist ? {
           artistId: this.selectedArtist.artistId
         } as Artist : undefined

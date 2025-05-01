@@ -57,7 +57,10 @@ export class AppComponent implements OnInit {
   }
 
   get showLayout(): boolean {
+    // Add checkout to public routes and check if the current route starts with /checkout/
     const publicRoutes = ['/', '/login'];
-    return this.isLoggedIn && !publicRoutes.includes(this.router.url);
+    return this.isLoggedIn && 
+           !publicRoutes.includes(this.router.url) && 
+           !this.router.url.startsWith('/checkout/');
   }
 }

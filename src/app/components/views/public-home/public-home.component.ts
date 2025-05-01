@@ -1,45 +1,101 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { EventService } from '../../../services/event.service';
+import { TicketService } from '../../../services/ticket.service';
+import { CartService } from '../../../services/cart.service';
 import { Event } from '../../../models/event.model';
+import { Ticket } from '../../../models/ticket.model';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { trigger, state, style, animate, transition, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-public-home',
   templateUrl: './public-home.component.html',
   styleUrls: ['./public-home.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink]
+  imports: [CommonModule, FormsModule, RouterLink],
+  animations: [
+    trigger('signatureAnimation', [
+      state('typing', style({
+        width: '0',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
+      })),
+      state('typed', style({
+        width: '100%',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap'
+      })),
+      transition('typing => typed', [
+        animate('2s steps(40, end)')
+      ]),
+      transition('typed => typing', [
+        animate('0.5s')
+      ])
+    ])
+  ]
 })
 export class PublicHomeComponent implements OnInit {
   searchQuery: string = '';
   popularEvents: Event[] = [];
+  filteredEvents: Event[] = [];
+  cartCount: number = 0;
+  signatureState: string = 'typing';
   private readonly thumbnailCount = 5;
   private readonly imageWidth = 400;
   private readonly imageHeight = 300;
+  private tickets: Ticket[] = [];
+  private allEvents: Event[] = [];
 
-  constructor(private eventService: EventService) {}
+  constructor(
+    private eventService: EventService,
+    private ticketService: TicketService,
+    private cartService: CartService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.loadPopularEvents();
+    this.loadEventsAndTickets();
+    this.cartService.cartItems$.subscribe(items => {
+      this.cartCount = items.length;
+    });
+    this.startSignatureAnimation();
   }
 
-  loadPopularEvents() {
-    this.eventService.getEvents().subscribe({
-      next: (events: Event[]) => {
-        this.popularEvents = events
+  startSignatureAnimation() {
+    setInterval(() => {
+      this.signatureState = this.signatureState === 'typing' ? 'typed' : 'typing';
+    }, 2000);
+  }
+
+  loadEventsAndTickets() {
+    forkJoin({
+      events: this.eventService.getEvents(),
+      tickets: this.ticketService.getTickets()
+    }).subscribe({
+      next: (result) => {
+        this.tickets = result.tickets;
+        this.allEvents = result.events.map(event => ({
+          ...event,
+          imageUrl: this.getRandomConcertImage()
+        }));
+        this.filteredEvents = [...this.allEvents];
+        this.popularEvents = this.allEvents
           .sort((a, b) => b.popularity - a.popularity)
-          .slice(0, 6)
-          .map(event => ({
-            ...event,
-            imageUrl: this.getRandomConcertImage()
-          }));
+          .slice(0, 6);
       },
       error: (error: Error) => {
-        console.error('Error loading popular events:', error);
+        console.error('Error loading data:', error);
       }
     });
+  }
+
+  calculateRemainingTickets(event: Event): number {
+    const soldTickets = this.tickets.filter(ticket => ticket.eventId === event.eventId).length;
+    return event.capacity - soldTickets;
   }
 
   private getRandomConcertImage(): string {
@@ -48,8 +104,26 @@ export class PublicHomeComponent implements OnInit {
   }
 
   onSearch() {
-    // TODO: Implement search functionality
-    console.log('Searching for:', this.searchQuery);
+    if (!this.searchQuery.trim()) {
+      this.filteredEvents = [...this.allEvents];
+      return;
+    }
+
+    const query = this.searchQuery.toLowerCase().trim();
+    this.filteredEvents = this.allEvents.filter(event => 
+      event.label.toLowerCase().includes(query) ||
+      event.place.toLowerCase().includes(query) ||
+      event.date.toLowerCase().includes(query)
+    );
+  }
+
+  getSectionTitle(): string {
+    if (!this.searchQuery.trim()) {
+      return 'Concerts à venir !';
+    }
+    return this.filteredEvents.length > 0 
+      ? `Résultats pour "${this.searchQuery}"` 
+      : `Aucun résultat pour "${this.searchQuery}"`;
   }
 
   formatDate(date: string): string {
@@ -60,8 +134,7 @@ export class PublicHomeComponent implements OnInit {
     });
   }
 
-  calculateRemainingTickets(event: Event): number {
-    const soldTickets = event.tickets?.length || 0;
-    return event.capacity - soldTickets;
+  addToCart(event: Event) {
+    this.router.navigate(['/checkout', event.eventId]);
   }
 } 

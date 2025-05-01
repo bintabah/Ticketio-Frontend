@@ -4,6 +4,7 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  padding-top: 4rem; /* Add padding to account for fixed header */
 }
 
 /* Header */
@@ -14,6 +15,11 @@
   padding: 1rem 2rem;
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 
 .logo {
@@ -45,11 +51,40 @@
   text-decoration: none;
   color: #1e293b;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #3b82f6;
+}
+
+.nav-link i {
+  font-size: 1rem;
 }
 
 .cart-icon {
-  color: #1e293b;
-  font-size: 1.2rem;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* Hero Section */
@@ -69,8 +104,25 @@
 .hero-section h1 {
   font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   line-height: 1.3;
+}
+
+.signature {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.8rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 1px;
+  display: inline-block;
+  border-right: 2px solid white;
+  animation: blink 0.75s step-end infinite;
+}
+
+@keyframes blink {
+  from, to { border-color: transparent }
+  50% { border-color: white; }
 }
 
 .search-container {
@@ -114,27 +166,39 @@
   margin-bottom: 2rem;
 }
 
+/* Container for all cards */
 .concert-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  justify-items: center;
 }
 
+/* Individual card styling */
 .concert-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background: white;
+  height: 100%;
+  max-height: 400px;
+  width: 100%;
+  max-width: 400px;
 }
 
 .concert-image {
   width: 100%;
-  height: 200px;
+  aspect-ratio: 16/9;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  display: block;
+  max-height: 225px;
 }
 
 .placeholder-image {
@@ -150,25 +214,34 @@
 }
 
 .concert-info {
-  padding: 1.5rem;
+  padding: 16px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
+/* Title styling */
 .concert-info h3 {
+  margin: 0 0 8px 0;
   font-size: 1.25rem;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
+/* Location and date styling */
 .concert-info p {
-  color: #64748b;
-  margin-bottom: 0.5rem;
+  margin: 0 0 8px 0;
+  color: #666;
 }
 
+/* Price and tickets container */
 .price-tickets-container {
+  margin-top: auto;  /* Push to bottom of card */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
 }
 
 .price {
@@ -182,13 +255,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #4f46e5;
   font-size: 0.875rem;
   margin: 0;
-}
-
-.remaining-tickets i {
-  font-size: 1rem;
 }
 
 /* Add a warning color when tickets are running low */
@@ -277,4 +345,81 @@
   padding-top: 2rem;
   border-top: 1px solid #334155;
   color: #94a3b8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .concert-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .concert-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.add-to-cart-button {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  background-color: #1e293b;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  opacity: 0.95;
+  z-index: 2;
+}
+
+.add-to-cart-button .tooltip {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  background-color: #1e293b;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  margin-left: 10px;
+  z-index: 3;
+}
+
+.add-to-cart-button .tooltip::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent #1e293b transparent transparent;
+}
+
+.add-to-cart-button:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.add-to-cart-button:hover {
+  transform: scale(1.05);
+  background-color: #0f172a;
+  opacity: 1;
+}
+
+.add-to-cart-button i {
+  font-size: 1.4rem;
 } 

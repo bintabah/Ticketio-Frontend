@@ -2,61 +2,62 @@
   <!-- Header -->
   <header class="header">
     <div class="logo">
-      <img src="/favicon.ico" alt="Ticketio Logo" class="logo-img">
+      <img src="public/favicon.ico" alt="Ticketio Logo" class="logo-img">
       <span>Ticketio</span>
     </div>
     <nav class="nav-menu">
       <a href="#" class="nav-link">Accueil</a>
-      <a href="#" class="nav-link">Événements</a>
-      <a routerLink="/admin" class="nav-link">Connexion / Inscription</a>
-      <a href="#" class="cart-icon">
-        <i class="pi pi-shopping-cart"></i>
+      <a href="#" class="nav-link">Contact</a>
+      <a routerLink="/admin" class="nav-link">
+        <i class="pi pi-user"></i>
+        <span>Connexion</span>
       </a>
     </nav>
   </header>
 
   <!-- Hero Section -->
   <section class="hero-section">
-    <h1>Recherchez un concert par<br>artiste, lieu, date, genre musical</h1>
+    <h1>Des tickets pour vos concerts préférés en un seul endroit !</h1>
+    <p class="signature" [@signatureAnimation]="signatureState">By Romaric & Hadja</p>
     <div class="search-container">
       <input 
         type="text" 
         [(ngModel)]="searchQuery"
-        placeholder="Recherchez un concert par artiste, lieu, date, genre musical"
+        (ngModelChange)="onSearch()"
+        placeholder="Saisissez un artiste, lieu, date ..."
         class="search-input"
       >
-      <button class="search-button" (click)="onSearch()">
-        <i class="pi pi-search"></i>
-      </button>
     </div>
   </section>
 
   <!-- Popular Concerts Section -->
   <section class="popular-concerts">
-    <h2>Concerts populaires</h2>
+    <h2>{{ getSectionTitle() }}</h2>
     <div class="concert-grid">
-      <div class="concert-card" *ngFor="let event of popularEvents">
+      <div class="concert-card" *ngFor="let event of filteredEvents">
         <div class="concert-image" [ngStyle]="{'background-image': 'url(' + event.imageUrl + ')'}"></div>
         <div class="concert-info">
           <h3>{{ event.label }}</h3>
           <p>{{ formatDate(event.date) }} • {{ event.place }}</p>
           <div class="price-tickets-container">
             <p class="price">{{ event.price }}€</p>
-            <p class="remaining-tickets" 
-               [class.low]="calculateRemainingTickets(event) <= event.capacity * 0.2"
-               [class.critical]="calculateRemainingTickets(event) <= event.capacity * 0.1">
+            <p class="remaining-tickets">
               <i class="pi pi-ticket"></i>
               {{ calculateRemainingTickets(event) }} places restantes
             </p>
           </div>
         </div>
+        <button class="add-to-cart-button" (click)="addToCart(event)">
+          <i class="pi pi-receipt"></i>
+          <span class="tooltip">Buy this ticket</span>
+        </button>
       </div>
 
       <!-- Placeholder card if no events -->
-      <div class="concert-card placeholder-card" *ngIf="popularEvents.length === 0">
+      <div class="concert-card placeholder-card" *ngIf="filteredEvents.length === 0">
         <div class="concert-image placeholder-image"></div>
         <div class="concert-info">
-          <h3>Chargement...</h3>
+          <h3>Aucun événement trouvé</h3>
           <p>--</p>
           <p class="price">--€</p>
         </div>
@@ -90,7 +91,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2024 Ticketio. Tous droits réservés.</p>
+      <p>&copy; 2025 Ticketio. Tous droits réservés.</p>
     </div>
   </footer>
 </div> 
