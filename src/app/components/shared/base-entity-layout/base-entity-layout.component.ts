@@ -17,7 +17,7 @@ import { InputTextModule } from 'primeng/inputtext';
     <div class="entity-wrapper">
       <div class="entity-header">
         <h2>{{ title }}</h2>
-        <div class="entity-actions">
+        <div class="entity-actions" *ngIf="showAddButton">
           <button pButton icon="pi pi-plus" label="Add New" (click)="onAdd()" class="p-button-primary"></button>
         </div>
       </div>
@@ -62,6 +62,7 @@ import { InputTextModule } from 'primeng/inputtext';
 export class BaseEntityLayoutComponent {
   @Input() title!: string;
   @Input() contentTemplate!: any;
+  @Input() showAddButton: boolean = true;
   @Output() add = new EventEmitter<void>();
 
   onAdd() {

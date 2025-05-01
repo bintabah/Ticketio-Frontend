@@ -17,6 +17,7 @@ import { DividerModule } from 'primeng/divider';
 import { BadgeModule } from 'primeng/badge';
 import { AccordionModule } from 'primeng/accordion';
 import { AvatarModule } from 'primeng/avatar';
+import { BaseEntityLayoutComponent } from '../../shared/base-entity-layout/base-entity-layout.component';
 
 interface TicketGroup {
   event: Event;
@@ -38,51 +39,53 @@ interface TicketGroup {
     DividerModule,
     BadgeModule,
     AccordionModule,
-    AvatarModule
+    AvatarModule,
+    BaseEntityLayoutComponent
   ],
   providers: [ConfirmationService, MessageService],
   template: `
-    <div class="container mx-auto p-4 bg-gray-50 pl-4 min-h-screen">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">Gestion des tickets</h1>
-        <p-divider></p-divider>
-      </div>
-      
+    <app-base-entity-layout
+      title="Tickets"
+      [contentTemplate]="contentTemplate"
+      [showAddButton]="false">
+    </app-base-entity-layout>
+
+    <ng-template #contentTemplate>
       <p-toast></p-toast>
       <p-confirmDialog header="Confirmation" 
                       icon="pi pi-exclamation-triangle"
                       acceptLabel="Oui"
                       rejectLabel="Non"></p-confirmDialog>
       
-      <div *ngIf="loading" class="flex justify-center my-12">
+      <div *ngIf="loading" class="flex justify-content-center my-4">
         <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
       </div>
       
-      <div *ngIf="!loading && ticketGroups.length === 0" class="text-center py-12 bg-white rounded-lg shadow">
-        <i class="pi pi-ticket text-5xl text-gray-300 mb-4"></i>
-        <p class="text-xl text-gray-500">Aucun ticket trouvé.</p>
+      <div *ngIf="!loading && ticketGroups.length === 0" class="text-center py-6 surface-card border-round shadow-1">
+        <i class="pi pi-ticket text-5xl text-500 mb-4"></i>
+        <p class="text-xl text-700">Aucun ticket trouvé.</p>
       </div>
       
-      <p-accordion [multiple]="true" [styleClass]="'shadow-sm'" *ngIf="!loading && ticketGroups.length > 0">
+      <p-accordion [multiple]="true" *ngIf="!loading && ticketGroups.length > 0">
         <p-accordionTab *ngFor="let group of ticketGroups">
           <ng-template pTemplate="header">
-            <span class="flex items-center gap-3 w-full">
-              <i class="pi pi-calendar-event text-xl text-blue-500"></i>
-              <span>
-                <span class="font-bold">{{ group.event.label }}</span>
-                <div class="flex items-center text-sm text-gray-500 mt-1">
+            <div class="flex align-items-center gap-3 w-full">
+              <i class="pi pi-calendar-event text-xl text-primary"></i>
+              <div class="flex-grow-1">
+                <span class="font-bold text-900">{{ group.event.label }}</span>
+                <div class="flex align-items-center text-sm text-700 mt-1">
                   <i class="pi pi-calendar mr-2"></i>
                   <span>{{ group.event.date | date:'dd/MM/yyyy' }}</span>
                   <i class="pi pi-map-marker ml-4 mr-2"></i>
                   <span>{{ group.event.place }}</span>
                 </div>
-              </span>
-              <p-badge [value]="group.tickets.length.toString()" severity="info" class="ml-auto"></p-badge>
-            </span>
+              </div>
+              <p-badge [value]="group.tickets.length.toString()" severity="info"></p-badge>
+            </div>
           </ng-template>
           
-          <div class="px-2 pb-2">
-            <p-table [value]="group.tickets" styleClass="p-datatable-sm p-datatable-striped"
+          <div class="p-2">
+            <p-table [value]="group.tickets" styleClass="p-datatable-sm"
                     [tableStyle]="{'min-width': '50rem'}" [rowHover]="true">
               <ng-template pTemplate="header">
                 <tr>
@@ -97,29 +100,29 @@ interface TicketGroup {
               <ng-template pTemplate="body" let-ticket>
                 <tr>
                   <td class="text-center">
-                    <span class="p-badge p-badge-info">{{ ticket.ticketId }}</span>
+                    <span class="text-sm font-semibold">{{ ticket.ticketId }}</span>
                   </td>
                   <td>
-                    <div class="flex items-center">
+                    <div class="flex align-items-center">
                       <span class="font-medium">{{ ticket.noplace }}</span>
                     </div>
                   </td>
                   <td>
-                    <div class="flex items-center">
-                      <i class="pi pi-ticket mr-2 text-blue-500"></i>
-                      <code class="bg-gray-100 px-2 py-1 rounded">{{ ticket.code }}</code>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-ticket mr-2 text-primary"></i>
+                      <code class="bg-gray-100 px-2 py-1 border-round text-900">{{ ticket.code }}</code>
                     </div>
                   </td>
                   <td>
                     <p-tag [severity]="getStatusSeverity(ticket.status)" [value]="ticket.status"></p-tag>
                   </td>
                   <td>
-                    <span>{{ ticket.datePurchased | date:'dd/MM/yyyy' }}</span>
+                    <span class="text-700">{{ ticket.datePurchased | date:'dd/MM/yyyy' }}</span>
                   </td>
                   <td>
                     <div class="flex gap-2">
-                      <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm"></button>
-                      <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm"
+                      <button pButton icon="pi pi-trash" 
+                              class="p-button-rounded p-button-text p-button-danger p-button-sm"
                               (click)="onDelete(ticket)"></button>
                     </div>
                   </td>
@@ -127,9 +130,9 @@ interface TicketGroup {
               </ng-template>
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <td colspan="6" class="text-center py-6">
-                    <i class="pi pi-ticket text-gray-300 text-3xl mb-2"></i>
-                    <p>Aucun ticket pour cet événement</p>
+                  <td colspan="6" class="text-center py-4">
+                    <i class="pi pi-ticket text-500 text-3xl mb-2"></i>
+                    <p class="text-700">Aucun ticket pour cet événement</p>
                   </td>
                 </tr>
               </ng-template>
@@ -137,38 +140,53 @@ interface TicketGroup {
           </div>
         </p-accordionTab>
       </p-accordion>
-    </div>
+    </ng-template>
   `,
   styles: [`
     :host ::ng-deep {
-      .p-card .p-card-content {
-        padding: 0.5rem;
+      .p-accordion {
+        .p-accordion-header-link {
+          padding: 1.25rem;
+          background: var(--surface-card);
+          border: 1px solid var(--surface-border);
+          border-radius: 6px;
+          margin-bottom: 0.5rem;
+          
+          &:not(.p-disabled):hover {
+            background: var(--surface-hover);
+          }
+          
+          &:focus {
+            box-shadow: inset 0 0 0 1px var(--primary-color);
+          }
+        }
+        
+        .p-accordion-content {
+          padding: 1.25rem;
+          background: var(--surface-card);
+          border: 1px solid var(--surface-border);
+          border-top: 0;
+          border-radius: 0 0 6px 6px;
+          margin-bottom: 0.5rem;
+        }
       }
       
-      .p-datatable .p-datatable-thead > tr > th {
-        background-color: #f8fafc;
-        color: #475569;
-        font-weight: 600;
-      }
-      
-      .p-accordion .p-accordion-header-link {
-        padding: 1.25rem;
-      }
-      
-      .p-accordion .p-accordion-content {
-        padding: 0;
-        border: none;
+      .p-datatable {
+        .p-datatable-thead > tr > th {
+          background: var(--surface-ground);
+          color: var(--text-color-secondary);
+          font-weight: 600;
+          padding: 0.75rem 1rem;
+        }
+        
+        .p-datatable-tbody > tr > td {
+          padding: 0.75rem 1rem;
+        }
       }
       
       .p-tag {
         min-width: 7rem;
         justify-content: center;
-      }
-
-      /* Ajusté pour gérer l'espace par rapport au menu latéral */
-      .container {
-        background-color: #f9fafb;
-        margin-left: 250px; /* Ajustez cette valeur selon la largeur de votre menu */
       }
     }
   `]
@@ -289,7 +307,7 @@ export class TicketsComponent implements OnInit {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Succès',
-                detail: `Le ticket "<strong>"${ticket.noPlace} - ${ticket.code}"</strong>" a été supprimé`
+                detail: `Le ticket "${ticket.noPlace} - ${ticket.code}" a été supprimé`
               });
               this.loadTickets();
             },
