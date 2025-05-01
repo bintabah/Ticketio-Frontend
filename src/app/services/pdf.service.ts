@@ -8,7 +8,6 @@ import { Event } from '../models/event.model';
 })
 export class PdfService {
   generateInvoice(ticket: Ticket, event: Event, customerInfo: any): void {
-    // Create PDF with white background
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -16,16 +15,13 @@ export class PdfService {
       putOnlyUsedFonts: true
     });
 
-    // Set background color to white
     doc.setFillColor(255, 255, 255);
     doc.rect(0, 0, 210, 297, 'F');
 
-    // Add a subtle border/shadow effect
     doc.setDrawColor(230, 230, 230);
     doc.setLineWidth(0.5);
     doc.rect(15, 15, 180, 267);
 
-    // Header section with logo
     const faviconPath = 'public/favicon.ico';
     try {
       doc.addImage(faviconPath, 'ICO', 40, 30, 15, 15);
@@ -33,31 +29,25 @@ export class PdfService {
       console.warn('Could not load favicon, continuing without logo');
     }
 
-    // Add Ticketio text next to logo
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(32);
     doc.setTextColor(44, 51, 66);
     doc.text('Ticketio', 60, 42);
 
-    // Add INVOICE text
     doc.setFontSize(24);
     doc.text('INVOICE', 40, 70);
 
-    // Add horizontal line
     doc.setDrawColor(200, 200, 200);
     doc.line(40, 80, 170, 80);
 
-    // Set font for labels
     doc.setFontSize(14);
     doc.setTextColor(44, 51, 66);
 
-    // Add ticket details with consistent spacing
     const startY = 100;
     const labelX = 40;
     const valueX = 100;
     const lineHeight = 12;
 
-    // Function to add a row with label and value
     const addRow = (label: string, value: string, y: number) => {
       doc.setFont('helvetica', 'bold');
       doc.text(label, labelX, y);
@@ -65,7 +55,6 @@ export class PdfService {
       doc.text(value, valueX, y);
     };
 
-    // Add all rows
     addRow('Ticket Code:', ticket.code, startY);
     addRow('Event', event.label, startY + lineHeight * 1);
     addRow('Date', event.date, startY + lineHeight * 2);
@@ -76,16 +65,13 @@ export class PdfService {
     addRow('Email', customerInfo.email, startY + lineHeight * 7);
     addRow('Purchase Date', ticket.datePurchased, startY + lineHeight * 8);
 
-    // Add bottom line
     doc.line(40, 240, 170, 240);
 
-    // Add footer text
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     doc.text('Thank you for your purchase!', 40, 255);
     doc.text('Ticketio - Your Event Ticket Platform', 40, 265);
 
-    // Save the PDF
     doc.save(`ticketio-invoice-${ticket.code}.pdf`);
   }
 } 
