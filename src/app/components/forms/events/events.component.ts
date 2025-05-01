@@ -59,7 +59,8 @@ export class EventsFormComponent implements OnInit {
       capacity: [0, [Validators.required, Validators.min(1)]],
       status: ['ACTIVE', Validators.required],
       popularity: [0, [Validators.required, Validators.min(0), Validators.max(5)]],
-      artist: [null]
+      artist: [null],
+      vipCode: ['price_1LBoFRGOeuivamSHGciHFnHZ', Validators.required]
     });
   }
 
@@ -106,17 +107,17 @@ export class EventsFormComponent implements OnInit {
 
   onSubmit() {
     if (this.eventForm.valid) {
+      const formValue = this.eventForm.value;
       const eventData: Event = {
         eventId: this.event?.eventId,
-        label: this.eventForm.get('label')?.value,
-        description: this.eventForm.get('description')?.value,
-        date: this.eventForm.get('date')?.value,
-        place: this.eventForm.get('place')?.value,
-        price: Number(this.eventForm.get('price')?.value),
-        capacity: Number(this.eventForm.get('capacity')?.value),
-        status: this.eventForm.get('status')?.value,
-        popularity: Number(this.eventForm.get('popularity')?.value),
-        vipCode: 'price_1LBoFRGOeuivamSHGciHFnHZ',
+        label: formValue.label,
+        description: formValue.description,
+        date: formValue.date instanceof Date ? formValue.date.toISOString() : formValue.date,
+        place: formValue.place,
+        price: Number(formValue.price),
+        capacity: Number(formValue.capacity),
+        status: formValue.status,
+        popularity: Number(formValue.popularity),
         artist: this.selectedArtist ? {
           artistId: this.selectedArtist.artistId
         } as Artist : undefined
