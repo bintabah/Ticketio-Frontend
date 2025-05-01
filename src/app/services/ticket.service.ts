@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Ticket } from '../models/ticket.model';
 
 @Injectable({
@@ -18,7 +18,9 @@ export class TicketService {
   }
 
   getTicketsByEvent(eventId: number): Observable<Ticket[]> {
-    return this.http.get<Ticket[]>(`${this.apiUrl}/event/${eventId}`);
+    return this.getTickets().pipe(
+      map(tickets => tickets.filter(ticket => ticket.eventId === eventId))
+    );
   }
 
   getTicket(id: number): Observable<Ticket> {
@@ -40,10 +42,8 @@ export class TicketService {
     let errorMessage = 'An error occurred while creating the ticket.';
     
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
       errorMessage = `Error: ${error.error.message}`;
     } else {
-      // Server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}\nDetails: ${JSON.stringify(error.error)}`;
     }
     

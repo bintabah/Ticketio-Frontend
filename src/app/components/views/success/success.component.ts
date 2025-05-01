@@ -2,9 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TicketService } from '../../../services/ticket.service';
+import { UserService } from '../../../services/user.service';
+import { EventService } from '../../../services/event.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { Ticket } from '../../../models/ticket.model';
+import { User } from '../../../models/user.model';
+import { Event } from '../../../models/event.model';
+import { PdfService } from '../../../services/pdf.service';
 
 @Component({
   selector: 'app-success',
@@ -19,7 +24,10 @@ export class SuccessComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private ticketService: TicketService,
-    private messageService: MessageService
+    private userService: UserService,
+    private eventService: EventService,
+    private messageService: MessageService,
+    private pdfService: PdfService
   ) {}
 
   ngOnInit() {
@@ -39,63 +47,137 @@ export class SuccessComponent implements OnInit {
   }
 
   private createTicket(eventId: number) {
-    console.log('Generating ticket data for event:', eventId);
-    const ticket: Ticket = {
-      noPlace: this.generateSeatNumber(),
-      code: this.generateTicketCode(),
-      status: 'ACTIVE',
-      datePurchased: new Date(),
-      eventId: eventId,
-      userId: 1 // You might want to get this from the current user
-    };
-
-    console.log('Sending ticket creation request:', ticket);
-    this.ticketService.createTicket(ticket).subscribe({
-      next: (response) => {
-        console.log('Ticket created successfully:', response);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Your ticket has been created successfully!'
-        });
-        setTimeout(() => {
+    this.eventService.getEvent(eventId).subscribe({
+      next: (event) => {
+        if (!event) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Event not found'
+          });
           this.router.navigate(['/']);
-        }, 3000);
-      },
-      error: (error) => {
-        console.error('Error creating ticket:', error);
-        let errorMessage = 'Failed to create ticket. Please contact support.';
-        
-        if (error.status === 404) {
-          errorMessage = 'Event not found. Please contact support.';
-        } else if (error.status === 400) {
-          errorMessage = 'Invalid ticket data. Please contact support.';
-        } else if (error.status === 500) {
-          errorMessage = 'Server error. Please try again later or contact support.';
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
+          return;
         }
 
+        this.userService.getUsers().subscribe({
+          next: (users) => {
+            if (users.length === 0) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'No users found'
+              });
+              this.router.navigate(['/']);
+              return;
+            }
+
+            // Get random user for ticket assignment
+            const randomUser = users[Math.floor(Math.random() * users.length)];
+
+            this.ticketService.getTicketsByEvent(eventId).subscribe({
+              next: (tickets) => {
+                const remainingTickets = event.capacity - tickets.length;
+                if (remainingTickets <= 0) {
+                  this.messageService.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No tickets available for this event'
+                  });
+                  this.router.navigate(['/']);
+                  return;
+                }
+
+                const ticket: Ticket = {
+                  noPlace: remainingTickets.toString(),
+                  code: this.generateTicketCode(),
+                  status: 'Valid',
+                  datePurchased: new Date().toISOString().split('T')[0],
+                  eventId: eventId,
+                  userId: randomUser.userId
+                };
+
+                console.log('Sending ticket creation request:', ticket);
+                this.ticketService.createTicket(ticket).subscribe({
+                  next: (response) => {
+                    console.log('Ticket created successfully:', response);
+                    
+                    // Generate and download PDF invoice
+                    const customerInfo = {
+                      firstName: randomUser.firstName,
+                      lastName: randomUser.name,
+                      email: randomUser.email
+                    };
+                    this.pdfService.generateInvoice(ticket, event, customerInfo);
+
+                    this.messageService.add({
+                      severity: 'success',
+                      summary: 'Success',
+                      detail: 'Your ticket has been created successfully!'
+                    });
+                    setTimeout(() => {
+                      this.router.navigate(['/']);
+                    }, 3000);
+                  },
+                  error: (error) => {
+                    console.error('Error creating ticket:', error);
+                    let errorMessage = 'Failed to create ticket. Please try again.';
+                    
+                    if (error.error?.message) {
+                      errorMessage = error.error.message;
+                    } else if (error.status === 404) {
+                      errorMessage = 'Event not found.';
+                    } else if (error.status === 400) {
+                      errorMessage = 'Invalid ticket data.';
+                    } else if (error.status === 500) {
+                      errorMessage = 'Server error. Please try again later.';
+                    }
+
+                    this.messageService.add({
+                      severity: 'error',
+                      summary: 'Error',
+                      detail: errorMessage,
+                      life: 5000
+                    });
+                  }
+                });
+              },
+              error: (error) => {
+                console.error('Error loading tickets:', error);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Failed to load tickets for event'
+                });
+                this.router.navigate(['/']);
+              }
+            });
+          },
+          error: (error) => {
+            console.error('Error loading users:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to load users'
+            });
+            this.router.navigate(['/']);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error loading event:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: errorMessage,
-          life: 5000
+          detail: 'Failed to load event details'
         });
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 5000);
+        this.router.navigate(['/']);
       }
     });
   }
 
-  private generateSeatNumber(): string {
-    const row = String.fromCharCode(65 + Math.floor(Math.random() * 26)); // A-Z
-    const seat = Math.floor(Math.random() * 100) + 1;
-    return `${row}${seat}`;
-  }
-
   private generateTicketCode(): string {
-    return Math.random().toString(36).substring(2, 15).toUpperCase();
+    const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substring(2, 6);
+    return `TIX-${timestamp}-${random}`.toUpperCase();
   }
 } 

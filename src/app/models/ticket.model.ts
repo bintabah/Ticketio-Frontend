@@ -3,7 +3,7 @@ export interface Ticket {
   noPlace: string;
   code: string;
   status: string;
-  datePurchased: Date;
+  datePurchased: string;
   eventId: number;
   userId: number;
 }
