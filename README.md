@@ -106,6 +106,8 @@ During the development process, we mainly encountered configuration-related and 
 ## **3. How to Start the Project 🚀**
 
 #### ⚠️ **Prerequisites**
+a0) YOU MUST HAVE EXECUTED THE STEP INSTALLATIONS OF THE [BACKEND](https://gitlab2.istic.univ-rennes1.fr/sir/ticketio_back.git) BEFORE
+
 a) **Docker Engine 🐳**  
 > Used to run Node.js, npm, and Angular CLI in a consistent environment.
 
@@ -117,7 +119,7 @@ b) **Required tools** : Web browser & VSCode (or any other IDE)
 
 ### **1️⃣ Clone the project and go inside its folder**
 ```sh
-git clone https://gitlab2.istic.univ-rennes1.fr/ragbaholou/ticketio_front.git
+git clone https://gitlab2.istic.univ-rennes1.fr/sir/ticketio_front.git
 cd ticketio_front
 ```
 
@@ -217,5 +219,5 @@ Wait for the Angular CLI to build and expose the app at:
 
 👥 **Team Members** : [AGBAHOLOU Romaric Armel](https://gitlab2.istic.univ-rennes1.fr/ragbaholou), [BAH Hadja Sory Binta](https://gitlab2.istic.univ-rennes1.fr/hbah)  
 👨‍🏫 **Project Supervisor** : [Chiara Relevat](https://gitlab2.istic.univ-rennes1.fr/crelevat)  
-📂 **Frontend Repository** : https://gitlab2.istic.univ-rennes1.fr/ragbaholou/ticketio_front  
-📂 **Backend Repository** : https://gitlab2.istic.univ-rennes1.fr/ragbaholou/ticketio_back
+📂 **Frontend Repository** : https://gitlab2.istic.univ-rennes1.fr/sir/ticketio_front.git 
+📂 **Backend Repository** : https://gitlab2.istic.univ-rennes1.fr/sir/ticketio_back.git
