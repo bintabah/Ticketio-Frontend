@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { EventService } from '../../../services/event.service';
 import { TicketService } from '../../../services/ticket.service';
+import { CartService } from '../../../services/cart.service';
 import { Event } from '../../../models/event.model';
 import { Ticket } from '../../../models/ticket.model';
 import { forkJoin } from 'rxjs';
@@ -19,35 +20,42 @@ import { map } from 'rxjs/operators';
 export class PublicHomeComponent implements OnInit {
   searchQuery: string = '';
   popularEvents: Event[] = [];
+  filteredEvents: Event[] = [];
+  cartCount: number = 0;
   private readonly thumbnailCount = 5;
   private readonly imageWidth = 400;
   private readonly imageHeight = 300;
   private tickets: Ticket[] = [];
+  private allEvents: Event[] = [];
 
   constructor(
     private eventService: EventService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
     this.loadEventsAndTickets();
+    this.cartService.cartItems$.subscribe(items => {
+      this.cartCount = items.length;
+    });
   }
 
   loadEventsAndTickets() {
-    // Use forkJoin to fetch both events and tickets in parallel
     forkJoin({
       events: this.eventService.getEvents(),
       tickets: this.ticketService.getTickets()
     }).subscribe({
       next: (result) => {
         this.tickets = result.tickets;
-        this.popularEvents = result.events
+        this.allEvents = result.events.map(event => ({
+          ...event,
+          imageUrl: this.getRandomConcertImage()
+        }));
+        this.filteredEvents = [...this.allEvents];
+        this.popularEvents = this.allEvents
           .sort((a, b) => b.popularity - a.popularity)
-          .slice(0, 6)
-          .map(event => ({
-            ...event,
-            imageUrl: this.getRandomConcertImage()
-          }));
+          .slice(0, 6);
       },
       error: (error: Error) => {
         console.error('Error loading data:', error);
@@ -66,8 +74,26 @@ export class PublicHomeComponent implements OnInit {
   }
 
   onSearch() {
-    // TODO: Implement search functionality
-    console.log('Searching for:', this.searchQuery);
+    if (!this.searchQuery.trim()) {
+      this.filteredEvents = [...this.allEvents];
+      return;
+    }
+
+    const query = this.searchQuery.toLowerCase().trim();
+    this.filteredEvents = this.allEvents.filter(event => 
+      event.label.toLowerCase().includes(query) ||
+      event.place.toLowerCase().includes(query) ||
+      event.date.toLowerCase().includes(query)
+    );
+  }
+
+  getSectionTitle(): string {
+    if (!this.searchQuery.trim()) {
+      return 'Concerts à venir !';
+    }
+    return this.filteredEvents.length > 0 
+      ? `Résultats pour "${this.searchQuery}"` 
+      : `Aucun résultat pour "${this.searchQuery}"`;
   }
 
   formatDate(date: string): string {
@@ -76,5 +102,9 @@ export class PublicHomeComponent implements OnInit {
       month: 'long',
       year: 'numeric'
     });
+  }
+
+  addToCart(event: Event) {
+    this.cartService.addToCart(event);
   }
 } 

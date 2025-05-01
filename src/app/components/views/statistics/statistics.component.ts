@@ -35,56 +35,10 @@ export class StatisticsComponent implements OnInit {
   ngOnInit() {
     this.loadStatistics();
     // Simulated data - replace with actual API calls
-    this.totalUsers = 845;
-    this.totalEvents = 32;
+    this.totalUsers = 0;
+    this.totalEvents = 0;
     
-    this.topEvents = [
-      {
-        eventId: 1,
-        label: 'Summer Festival 2024',
-        date: new Date('2024-07-15'),
-        place: 'Central Park',
-        price: 50,
-        ticketsSold: 450,
-        revenue: 22500
-      },
-      {
-        eventId: 2,
-        label: 'Rock Concert',
-        date: new Date('2024-06-20'),
-        place: 'Stadium Arena',
-        price: 50,
-        ticketsSold: 380,
-        revenue: 19000
-      },
-      {
-        eventId: 3,
-        label: 'Jazz Night',
-        date: new Date('2024-05-30'),
-        place: 'Music Hall',
-        price: 50,
-        ticketsSold: 280,
-        revenue: 14000
-      },
-      {
-        eventId: 4,
-        label: 'Classical Symphony',
-        date: new Date('2024-06-05'),
-        place: 'Opera House',
-        price: 50,
-        ticketsSold: 250,
-        revenue: 12500
-      },
-      {
-        eventId: 5,
-        label: 'Dance Festival',
-        date: new Date('2024-07-01'),
-        place: 'City Square',
-        price: 50,
-        ticketsSold: 220,
-        revenue: 11000
-      }
-    ];
+    this.topEvents = [];
   }
 
   private loadStatistics() {

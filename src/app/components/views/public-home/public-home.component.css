@@ -48,8 +48,25 @@
 }
 
 .cart-icon {
-  color: #1e293b;
-  font-size: 1.2rem;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /* Hero Section */
@@ -117,30 +134,36 @@
 /* Container for all cards */
 .concert-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
+  justify-items: center;
 }
 
 /* Individual card styling */
 .concert-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background: white;
-  height: 100%;  /* Make cards fill full height */
+  height: 100%;
+  max-height: 400px;
+  width: 100%;
+  max-width: 400px;
 }
 
 .concert-image {
   width: 100%;
-  aspect-ratio: 16/9;  /* Maintain consistent image ratio */
+  aspect-ratio: 16/9;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  max-height: 225px;
 }
 
 .placeholder-image {
@@ -157,9 +180,10 @@
 
 .concert-info {
   padding: 16px;
-  flex-grow: 1;  /* Allow info section to fill remaining space */
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Title styling */
@@ -289,16 +313,78 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .concert-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    padding: 16px;
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .concert-grid {
-    grid-template-columns: 1fr;  /* Single column on very small screens */
+    grid-template-columns: 1fr;
   }
+}
+
+.add-to-cart-button {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  background-color: #1e293b;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  opacity: 0.95;
+  z-index: 2;
+}
+
+.add-to-cart-button .tooltip {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  background-color: #1e293b;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  margin-left: 10px;
+  z-index: 3;
+}
+
+.add-to-cart-button .tooltip::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent #1e293b transparent transparent;
+}
+
+.add-to-cart-button:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.add-to-cart-button:hover {
+  transform: scale(1.05);
+  background-color: #0f172a;
+  opacity: 1;
+}
+
+.add-to-cart-button i {
+  font-size: 1.4rem;
 } 
