@@ -219,5 +219,5 @@ Wait for the Angular CLI to build and expose the app at:
 
 👥 **Team Members** : [AGBAHOLOU Romaric Armel](https://gitlab2.istic.univ-rennes1.fr/ragbaholou), [BAH Hadja Sory Binta](https://gitlab2.istic.univ-rennes1.fr/hbah)  
 👨‍🏫 **Project Supervisor** : [Chiara Relevat](https://gitlab2.istic.univ-rennes1.fr/crelevat)  
-📂 **Frontend Repository** : https://gitlab2.istic.univ-rennes1.fr/sir/ticketio_front.git 
-📂 **Backend Repository** : https://gitlab2.istic.univ-rennes1.fr/sir/ticketio_back.git
+📂 **Frontend Repository** : https://gitlab2.istic.univ-rennes1.fr/sir/ticketio_front.git   
+📂 **Backend Repository** : https://gitlab2.istic.univ-rennes1.fr/sir/ticketio_back.git 
