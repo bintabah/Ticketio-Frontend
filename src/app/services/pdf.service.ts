@@ -22,11 +22,10 @@ export class PdfService {
     doc.setLineWidth(0.5);
     doc.rect(15, 15, 180, 267);
 
-    const faviconPath = 'public/favicon.ico';
     try {
-      doc.addImage(faviconPath, 'ICO', 40, 30, 15, 15);
+      doc.addImage('public/favicon.png', 'PNG', 40, 30, 15, 15);
     } catch (error) {
-      console.warn('Could not load favicon, continuing without logo');
+      console.warn('Could not load logo, continuing without it:', error);
     }
 
     doc.setFont('helvetica', 'normal');
@@ -74,4 +73,4 @@ export class PdfService {
 
     doc.save(`ticketio-invoice-${ticket.code}.pdf`);
   }
-} 
+}

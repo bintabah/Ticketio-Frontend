@@ -12,6 +12,7 @@
 - [x] Testing and validation
 - [x] Interactice search
 - [x] Payment Processor  
+- [x] Invoice Generation Ticket  
 
 📢 **Progress Details** :  
 > The frontend of the Ticketio project has been developed using **Angular 19.2.5**, following a component-based architecture, and fully dockerized. 
