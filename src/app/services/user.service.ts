@@ -4,12 +4,13 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { User } from '../models/user.model';
 import { BaseEntityService } from './base-entity.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService extends BaseEntityService<User> {
-  protected apiUrl = '/api/users';
+  protected apiUrl = `${environment.apiUrl}/users`;
 
   constructor(http: HttpClient) {
     super(http);

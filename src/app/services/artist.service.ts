@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Artist } from '../models/artist.model';
 import { BaseEntityService } from './base-entity.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArtistService extends BaseEntityService<Artist> {
-  protected apiUrl = '/api/artists';
+  protected apiUrl = `${environment.apiUrl}/artists`;
 
   constructor(http: HttpClient) {
     super(http);

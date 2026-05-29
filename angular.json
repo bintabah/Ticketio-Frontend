@@ -47,6 +47,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/Ticketio-Frontend/",
               "budgets": [
                 {
                   "type": "initial",
